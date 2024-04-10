@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+	<title>ascii camera</title>
+	<meta charset="utf-8" />
+ 	<link rel="stylesheet" href="css/main.css"/>
+</head>
+<body>
+	<h1 id="info">You will need to allow access to your webcam in order for the code to work.</h1>
+
+	<div id="notSupported">
+		<h1>Your browser does not support the Camera API.</h1>
+		<img src="images/screenshot.png" align="center" />
+	</div>
+
+	<pre id="ascii"></pre>
+	<button id="button">start</button>
+    <label><input type=checkbox autocomplete=off onchange='invert()'>Invert</label>
+	<a href="https://github.com/QC20/AsciiVision" id="fork" target="_blank">View on GitHub</a>
+    
+	<a href="https://github.com/QC20/#Bottom" id="QC20DK" target="_blank">Made by <br> Jonas Kjeldmand Jensen</a>
+
+	<script src="script/camera.js"></script>
+	<script src="script/ascii.js"></script>
+	<script src="script/app.js"></script>
+</body>
+</html>
