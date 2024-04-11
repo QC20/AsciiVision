@@ -78,3 +78,9 @@ h1 {
 	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	font-size: 18px;
 }
+
+/* New styles for color inversion */
+body.invert-colors {
+    background-color: black; /* Black background */
+    color: lime; /* Bright green text */
+}

@@ -1,55 +1,56 @@
-/*
- * ASCII Camera
- * http://idevelop.github.com/ascii-camera/
- *
- * Copyright 2013, Andrei Gheorghe (http://github.com/idevelop)
- * Released under the MIT license
- */
-
 (function() {
-	var asciiContainer = document.getElementById("ascii");
-	var capturing = false;
+    var asciiContainer = document.getElementById("ascii");
+    var capturing = false;
+    var invertCheckbox = document.getElementById("colorInvertCheckbox");
 
-	camera.init({
-		width: 160,
-		height: 120,
-		fps: 30,
-		mirror: true,
+    // Function to handle color inversion checkbox change
+    invertCheckbox.addEventListener("change", function() {
+        if (this.checked) {
+            document.body.classList.add("invert-colors");
+        } else {
+            document.body.classList.remove("invert-colors");
+        }
+    });
 
-		onFrame: function(canvas) {
-			ascii.fromCanvas(canvas, {
-				// contrast: 128,
-				callback: function(asciiString) {
-					asciiContainer.innerHTML = asciiString;
-				}
-			});
-		},
+    camera.init({
+        width: 220,
+        height: 140,
+        fps: 75,
+        mirror: true,
 
-		onSuccess: function() {
-			document.getElementById("info").style.display = "none";
+        onFrame: function(canvas) {
+            ascii.fromCanvas(canvas, {
+                callback: function(asciiString) {
+                    asciiContainer.innerHTML = asciiString;
+                }
+            });
+        },
 
-			const button = document.getElementById("button");
-			button.style.display = "block";
-			button.onclick = function() {
-				if (capturing) {
-					camera.pause();
-					button.innerText = 'resume';
-				} else {
-					camera.start();
-					button.innerText = 'pause';
-				}
-				capturing = !capturing;
-			};
-		},
+        onSuccess: function() {
+            document.getElementById("info").style.display = "none";
 
-		onError: function(error) {
-			// TODO: log error
-		},
+            const button = document.getElementById("button");
+            button.style.display = "block";
+            button.onclick = function() {
+                if (capturing) {
+                    camera.pause();
+                    button.innerText = 'resume';
+                } else {
+                    camera.start();
+                    button.innerText = 'pause';
+                }
+                capturing = !capturing;
+            };
+        },
 
-		onNotSupported: function() {
-			document.getElementById("info").style.display = "none";
-			asciiContainer.style.display = "none";
-			document.getElementById("notSupported").style.display = "block";
-		}
-	});
+        onError: function(error) {
+            // TODO: log error
+        },
+
+        onNotSupported: function() {
+            document.getElementById("info").style.display = "none";
+            asciiContainer.style.display = "none";
+            document.getElementById("notSupported").style.display = "block";
+        }
+    });
 })();

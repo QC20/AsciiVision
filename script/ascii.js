@@ -1,4 +1,8 @@
-// Author: Andrei Gheorghe (http://github.com/idevelop)
+/*
+  Jonas Kjeldmand Jensen
+  May 2024
+
+*/
 
 var ascii = (function() {
 	function asciiFromCanvas(canvas, options) {
