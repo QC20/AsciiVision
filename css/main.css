@@ -1,86 +1,86 @@
 body {
-	padding: 50px;
-	background: white;
-	color: black;
+    padding: 50px;
+    background: white;
+    color: black;
 }
 
 h1 {
-	font-family: 'Helvetica neue', 'Helvetica', 'Arial', sans-serif;
-	font-size: 48px;
-	font-weight: 300;
-	color: #999;
-	text-align: center;
+    font-family: 'Helvetica neue', 'Helvetica', 'Arial', sans-serif;
+    font-size: 48px;
+    font-weight: 300;
+    color: #999;
+    text-align: center;
 }
 
 #notSupported {
-	display: none;
+    display: none;
 }
 
 #notSupported h1 {
-	color: #b41a1a;
-	margin-bottom: 20px;
+    color: #b41a1a;
+    margin-bottom: 20px;
 }
 
 #notSupported img {
-	display: block;
-	margin: 0 auto;
+    display: block;
+    margin: 0 auto;
 }
 
 #ascii {
-	font-family: 'Courier New', 'Courier', monospace;
-	font-size: 10px;
-	line-height: 10px;
-	letter-spacing: -1.5px;
-	text-align: center;
+    font-family: 'Courier New', 'Courier', monospace;
+    font-size: 10px;
+    line-height: 10px;
+    letter-spacing: -1.5px;
+    text-align: center;
 }
 
 #fork,
 #idevelop {
-	display: block;
-	position: fixed;
-	z-index: 10;
-
-	top: 0;
-	right: 30px;
-	padding: 10px 50px 10px 10px;
-
-	background: url('../img/github-logo.png') #1d1d1e no-repeat 95% 50%;
-	border: 1px solid #0090ff;
-	border-top: 0;
-
-	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-	font-weight: 500;
-	font-size: 14px;
-	text-decoration: none;
-	color: #fff;
-
-	border-bottom-left-radius: 3px;
-	border-bottom-right-radius: 3px;
+    display: block;
+    position: fixed;
+    z-index: 10;
+    top: 0;
+    right: 30px;
+    padding: 10px 50px 10px 10px;
+    background: url('../img/github-logo.png') #1d1d1e no-repeat 95% 50%;
+    border: 1px solid #0090ff;
+    border-top: 0;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    text-decoration: none;
+    color: #fff;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
 }
 
 #fork:hover,
 #idevelop:hover {
-	text-decoration: underline;
+    text-decoration: underline;
 }
 
 #idevelop {
-	border: 1px solid #eee;
-	border-top: 0;
-	color: #333;
-	right: 200px;
-	background: url('../images/idevelop.png') #fff no-repeat 95% 50%;
+    border: 1px solid #eee;
+    border-top: 0;
+    color: #333;
+    right: 200px;
+    background: url('../images/idevelop.png') #fff no-repeat 95% 50%;
 }
 
-#button {
-	display: none;
-	margin: 20px auto;
-	padding: 10px 20px;
-	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-	font-size: 18px;
+.controls {
+    text-align: center;
+    display: flex; /* Make controls flex container */
+    justify-content: center; /* Center content horizontally */
+    margin-top: 20px; /* Adjust as needed */
 }
 
-/* New styles for color inversion */
-body.invert-colors {
-    background-color: black; /* Black background */
-    color: lime; /* Bright green text */
+.controls button {
+    margin: 0 5px; /* Adjust spacing between buttons */
+    width: 150px; /* Adjust button width */
+	height: 50px; /* Adjust button height */
+}
+
+.invert-colors {
+    background-color: black;
+    color: white;
 }

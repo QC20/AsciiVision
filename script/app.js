@@ -1,16 +1,9 @@
 (function() {
     var asciiContainer = document.getElementById("ascii");
     var capturing = false;
-    var invertCheckbox = document.getElementById("colorInvertCheckbox");
 
-    // Function to handle color inversion checkbox change
-    invertCheckbox.addEventListener("change", function() {
-        if (this.checked) {
-            document.body.classList.add("invert-colors");
-        } else {
-            document.body.classList.remove("invert-colors");
-        }
-    });
+    var startButton = document.getElementById("button");
+    var invertButton = document.getElementById("invertButton");
 
     camera.init({
         width: 220,
@@ -20,6 +13,7 @@
 
         onFrame: function(canvas) {
             ascii.fromCanvas(canvas, {
+                // contrast: 128,
                 callback: function(asciiString) {
                     asciiContainer.innerHTML = asciiString;
                 }
@@ -29,18 +23,28 @@
         onSuccess: function() {
             document.getElementById("info").style.display = "none";
 
-            const button = document.getElementById("button");
-            button.style.display = "block";
-            button.onclick = function() {
+            startButton.style.display = "block";
+            startButton.innerText = capturing ? 'pause' : 'start';
+            startButton.onclick = function() {
                 if (capturing) {
                     camera.pause();
-                    button.innerText = 'resume';
+                    startButton.innerText = 'start';
                 } else {
                     camera.start();
-                    button.innerText = 'pause';
+                    startButton.innerText = 'pause';
                 }
                 capturing = !capturing;
             };
+
+            invertButton.style.display = "block";
+            invertButton.onclick = function() {
+                document.body.classList.toggle('invert-colors');
+            };
+
+            // Center the buttons
+            var controls = document.querySelector('.controls');
+            controls.style.display = 'flex';
+            controls.style.justifyContent = 'center';
         },
 
         onError: function(error) {
