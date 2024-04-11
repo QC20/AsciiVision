@@ -42,8 +42,8 @@ h1 {
     top: 0;
     right: 30px;
     padding: 10px 50px 10px 10px;
-    background: url('../img/github-logo.png') #1d1d1e no-repeat 95% 50%;
-    border: 1px solid #0090ff;
+    background: url('../img/github-logo.png') #100404 no-repeat 95% 50%;
+    border: 1px solid #170505;
     border-top: 0;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-weight: 500;
@@ -84,3 +84,95 @@ h1 {
     background-color: black;
     color: white;
 }
+
+/* Center the controls */
+.controls {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Button style */
+.controls button {
+    margin: 0 5px;
+    width: 150px;
+}
+
+/* Toggle container style */
+.toggle-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10;
+}
+
+/* Toggle checkbox style */
+.toggle-checkbox {
+    display: none;
+}
+
+/* Toggle label style */
+.toggle-label {
+    display: inline-block;
+    width: 50px;
+    height: 30px;
+    background-color: #2a2a2a;
+    border-radius: 15px;
+    position: relative;
+    cursor: pointer;
+}
+
+/* Toggle label indicator style */
+.toggle-label:before {
+    content: '';
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.3s;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 2px;
+}
+
+/* Toggle checkbox checked state */
+.toggle-checkbox:checked + .toggle-label {
+    background-color: #0F0; /* Green color for checked state */
+}
+
+/* Toggle label indicator position for checked state */
+.toggle-checkbox:checked + .toggle-label:before {
+    left: calc(100% - 27px);
+}
+
+.made-by {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-style: italic;
+    text-decoration: none;
+    color: #3f0e0e; /* Default color */
+}
+
+.made-by:hover .text {
+    color: #c61313; /* Change color on hover */
+}
+
+.made-by .text i {
+    font-style: normal; /* Reset font style for italic */
+}
+
+/* Apply the fade-in animation to elements */
+.fade-in {
+    opacity: 0; /* Start with 0 opacity */
+    animation: fadeIn ease-in-out 0.5s forwards; /* Animation duration and timing function */
+}
+
+/* Define the keyframes for the fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0; /* Start with 0 opacity */
+    }
+    to {
+        opacity: 1; /* End with 1 opacity */
+    }
+}
+ 
