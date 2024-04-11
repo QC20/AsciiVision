@@ -44,7 +44,7 @@ h1 {
 	right: 30px;
 	padding: 10px 50px 10px 10px;
 
-	background: url('../img/github-logo.png') #0090ff no-repeat 95% 50%;
+	background: url('../img/github-logo.png') #1d1d1e no-repeat 95% 50%;
 	border: 1px solid #0090ff;
 	border-top: 0;
 
@@ -78,14 +78,3 @@ h1 {
 	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	font-size: 18px;
 }
-
-input[type="checkbox" i] {
-    background-color: initial;
-    cursor: default;
-    appearance: auto;
-    box-sizing: border-box;
-    margin: 3px 3px 3px 4px;
-    padding: initial;
-    border: initial;
-}
-

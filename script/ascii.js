@@ -1,22 +1,17 @@
-/*
-  Made by Jonas Kjeldmand Jensen
-  May 2024
-
-*/
+// Author: Andrei Gheorghe (http://github.com/idevelop)
 
 var ascii = (function() {
-    function asciiFromCanvas(canvas, options) {
-      var characters = (" .,:;i1tfLCG08@").split("");
-      //var characters = (" .,:;irsqoahkedfugWNMBPLLY8@").split(""); // alternative character design
-      //var characters = (" #$@OWoahkbdpqwmZO0QLC7").split(""); // alternative character design
-      //var characters = (" .,:;|()1TtFC7#").split("");
-      //  var characters = ("   ░▒▓█").split("");
-  
-      var context = canvas.getContext("2d");
-      var canvasWidth = canvas.width;
-      var canvasHeight = canvas.height;
-  
-      var asciiCharacters = "";
+	function asciiFromCanvas(canvas, options) {
+		// Original code by Jacob Seidelin (http://www.nihilogic.dk/labs/jsascii/)
+		// Heavily modified by Andrei Gheorghe (http://github.com/idevelop)
+
+		var characters = (" .,:;i1tfLCG08@").split("");
+
+		var context = canvas.getContext("2d");
+		var canvasWidth = canvas.width;
+		var canvasHeight = canvas.height;
+		
+		var asciiCharacters = "";
 
 		// calculate contrast factor
 		// http://www.dfstudios.co.uk/articles/image-processing-algorithms-part-5/
