@@ -8,6 +8,12 @@
     var startButton = document.getElementById("button");
     var greenInverted = false; // Initially, not green inverted
 
+    var combinedCanvas = document.createElement("canvas");
+    combinedCanvas.setAttribute('width', 440); // Double the width of the individual canvas
+    combinedCanvas.setAttribute('height', 140); // Keep the height the same
+
+    var combinedCtx = combinedCanvas.getContext('2d');
+
     camera.init({
         width: 220,
         height: 140,
@@ -15,8 +21,11 @@
         mirror: true,
 
         onFrame: function(canvas) {
-            ascii.fromCanvas(canvas, {
-                // contrast: 128,
+            // Convert webcam feed to black and white
+            var grayscaleCanvas = convertToGrayscale(canvas);
+            
+
+            ascii.fromCanvas(grayscaleCanvas, {
                 callback: function(asciiString) {
                     if (colorScheme === 'white') {
                         asciiContainer.innerHTML = asciiString;
@@ -31,6 +40,9 @@
                         asciiContainer.style.color = '#0F0'; // Bright green text for black background
                         document.body.style.backgroundColor = '#000'; // Black background
                     }
+                    // Update buttons with mirrored and grayscale webcam feed
+                    startButton.style.backgroundImage = "url(" + grayscaleCanvas.toDataURL() + ")";
+                    invertButton.style.backgroundImage = "url(" + grayscaleCanvas.toDataURL() + ")";
                 }
             });
         },
@@ -39,14 +51,14 @@
             document.getElementById("info").style.display = "none";
 
             startButton.style.display = "block";
-            startButton.innerText = capturing ? 'pause' : 'start';
+            startButton.innerText = capturing ? 'Pause' : 'Start';
             startButton.onclick = function() {
                 if (capturing) {
                     camera.pause();
-                    startButton.innerText = 'start';
+                    startButton.innerText = 'Start';
                 } else {
                     camera.start();
-                    startButton.innerText = 'pause';
+                    startButton.innerText = 'Pause';
                 }
                 capturing = !capturing;
             };
@@ -87,4 +99,21 @@
             document.getElementById("notSupported").style.display = "block";
         }
     });
+
+    // Function to convert canvas to grayscale
+    function convertToGrayscale(canvas) {
+        var ctx = canvas.getContext('2d');
+        var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        var data = imageData.data;
+
+        for (var i = 0; i < data.length; i += 4) {
+            var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+            data[i] = avg; // Red
+            data[i + 1] = avg; // Green
+            data[i + 2] = avg; // Blue
+        }
+
+        ctx.putImageData(imageData, 0, 0);
+        return canvas;
+    }
 })();

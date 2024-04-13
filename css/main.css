@@ -95,6 +95,8 @@ h1 {
 .controls button {
     margin: 0 5px;
     width: 150px;
+    color:#3f0e0e; 
+    font-weight: bold;
 }
 
 /* Toggle container style */
@@ -175,4 +177,19 @@ h1 {
         opacity: 1; /* End with 1 opacity */
     }
 }
- 
+
+#container {
+    position: relative;
+}
+
+#combinedCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#button1,
+#button2 {
+    position: relative;
+    z-index: 1; /* Ensure buttons are above the canvas */
+}
