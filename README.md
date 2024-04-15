@@ -1,6 +1,14 @@
 # AsciiVision: Interactive ASCII Art Generator
 AsciiVision is a creative coding project that merges human-computer interaction with artistic expression. By transforming your webcam feed into ASCII art in real-time, AsciiVision offers an immersive experience that blurs the boundaries between technology and creativity.
 
+<p align="center">
+  <img src="img/white-1.png" alt="Ascii image in black and white" width="80%" height="80%">
+</p>
+<p align="center">
+  Ascii image in black and white.
+</p>
+
+
 ## Features
 - **Real-time ASCII Art:** AsciiVision captures video from your webcam and converts it into ASCII characters, providing a dynamic and interactive visual output.
 - **Customizable Color Schemes:** Experiment with different color schemes such as black and white or vibrant green text on a black background to tailor the visual aesthetic to your liking.
