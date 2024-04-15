@@ -12,6 +12,19 @@ var ascii = (function() {
 		// Define a set of characters from darkest to lightest to represent pixel brightness
 		var characters = (" .,:;i1tfLCG08@").split("");
 
+		// Different character sets (try them out!)
+		// var characters = (" ░▒▓█").split("");
+		// var characters = (" ░▒▓█▓▒░").split("");
+		// var characters = (" □◧◨◩◪◫").split("");
+		// var characters = (" .oO0").split("");
+		// var characters = (" |/=\\").split("");
+		// var characters = (" ☺☻♥♦♣♠").split("");
+		// var characters = (" .,-~:;=!$#@").split("");
+		// var characters = (" ☀☁☂❄").split("");
+		// var characters = (" ←↑→↓↔").split("");
+		// var characters = (" ☆★").split("");
+
+
 		// Get canvas context and dimensions
 		var context = canvas.getContext("2d");
 		var canvasWidth = canvas.width;
