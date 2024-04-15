@@ -14,7 +14,6 @@ AsciiVision leverages the Camera API to access your device's webcam, enabling se
 To unleash your creativity with AsciiVision, simply open the webpage in a compatible browser and grant permission to access your webcam. Once the webcam feed is initiated, you can interact with the controls to adjust color schemes, invert colors, and pause/resume the ASCII art generation process. Experiment with different settings to discover unique visual compositions and share your creations with others.
 
 ## Functionalities
-
 AsciiVision offers a range of interactive functionalities designed to enhance the user experience and encourage creative exploration:
 
 - **Real-time ASCII Art Generation:** AsciiVision captures live video from your webcam and converts it into ASCII art in real-time, providing immediate visual feedback and enabling dynamic artistic expression.
