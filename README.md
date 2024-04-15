@@ -13,6 +13,18 @@ AsciiVision leverages the Camera API to access your device's webcam, enabling se
 ## Usage
 To unleash your creativity with AsciiVision, simply open the webpage in a compatible browser and grant permission to access your webcam. Once the webcam feed is initiated, you can interact with the controls to adjust color schemes, invert colors, and pause/resume the ASCII art generation process. Experiment with different settings to discover unique visual compositions and share your creations with others.
 
+## Functionalities
+
+AsciiVision offers a range of interactive functionalities designed to enhance the user experience and encourage creative exploration:
+
+- **Real-time ASCII Art Generation:** AsciiVision captures live video from your webcam and converts it into ASCII art in real-time, providing immediate visual feedback and enabling dynamic artistic expression.
+- **Customizable Color Schemes:** Users can choose from a selection of predefined color schemes, including classic black and white or vivid green text on a black background. This customization feature allows individuals to tailor the visual style of the ASCII art to suit their preferences and artistic vision.
+- **Interactive Color Inversion:** AsciiVision allows users to invert the colors of the ASCII art with a simple toggle, offering an alternative perspective on the artwork and unlocking new creative possibilities.
+- **User-Friendly Controls:** AsciiVision features intuitive controls that enable users to start or pause the webcam feed and adjust color settings with ease. These user-friendly interactions promote a seamless creative workflow and empower individuals to engage actively with the artistic process.
+- **Cross-Device Compatibility:** AsciiVision is designed to be compatible with a wide range of devices and browsers, ensuring accessibility and usability across different platforms. Whether you're using a desktop computer, laptop, or mobile device, AsciiVision provides a consistent and immersive experience for all users.
+
+These functionalities combine to create an interactive and engaging artistic tool that encourages experimentation, exploration, and self-expression. Whether you're a seasoned creative coder or a curious newcomer, AsciiVision invites you to discover the fascinating intersection of technology and art.
+
 ## Credits
 AsciiVision is the brainchild of Jonas Kjeldmand Jensen, conceived as a fusion of creative coding, human-computer interaction, and interaction design principles. The project utilizes the `camera.js` library by Andrei Gheorghe for webcam access and video processing.
 
