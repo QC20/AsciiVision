@@ -32,6 +32,12 @@ AsciiVision offers a range of interactive functionalities designed to enhance th
 
 These functionalities combine to create an interactive and engaging artistic tool that encourages experimentation, exploration, and self-expression. Whether you're a seasoned creative coder or a curious newcomer, AsciiVision invites you to discover the fascinating intersection of technology and art.
 
+## Supported browsers
+
+- Chrome ≥ 21
+- Firefox ≥ 17 (requires media.navigator.enabled = true in about:config)
+- Opera ≥ 12
+
 ## Credits
 AsciiVision is the brainchild of Jonas Kjeldmand Jensen, conceived as a fusion of creative coding, human-computer interaction, and interaction design principles. The project utilizes the `camera.js` library by Andrei Gheorghe for webcam access and video processing.
 
