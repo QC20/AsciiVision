@@ -41,6 +41,12 @@ AsciiVision is licensed under the MIT License.
 ## Get Involved
 Join the creative coding community and contribute to AsciiVision by forking the repository on [GitHub](https://github.com/QC20/AsciiVision). Whether you're interested in enhancing functionality, refining user interface elements, or exploring new artistic possibilities, your contributions are welcomed and appreciated.
 
+<p align="center">
+  <img src="img/black-1.png" alt="Ascii image in white and black" width="80%" height="80%">
+</p>
+<p align="center">
+  Ascii image in white and black.
+</p>
 
 **To do:** 
 - [ ] fix toggle clicking on (without doing anything) when in normal mode
