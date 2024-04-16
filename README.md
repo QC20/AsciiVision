@@ -59,6 +59,6 @@ Join the creative coding community and contribute to AsciiVision by forking the 
 - [ ] Fix being able to switch between invert and normal when paused
 - [ ] see through mirror bottons
 - [ ] Make something cool with the name at the button
-- [ ] refractor code
+- [x] refractor code
 - [ ] write new comments everywhere to document logic
 
