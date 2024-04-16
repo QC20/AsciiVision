@@ -1,174 +1,164 @@
+/* Global styles */
 body {
-    padding: 50px;
-    background: white;
-    color: black;
+    padding: 50px; /* Add padding to body */
+    background: white; /* Set background color */
+    color: black; /* Set text color */
 }
 
+/* Header styles */
 h1 {
-    font-family: 'Helvetica neue', 'Helvetica', 'Arial', sans-serif;
-    font-size: 48px;
-    font-weight: 300;
-    color: #999;
-    text-align: center;
+    font-family: 'Helvetica neue', 'Helvetica', 'Arial', sans-serif; /* Specify font family */
+    font-size: 48px; /* Set font size */
+    font-weight: 300; /* Set font weight */
+    color: #999; /* Set text color */
+    text-align: center; /* Center align text */
 }
 
+/* Styles for unsupported message */
 #notSupported {
-    display: none;
+    display: none; /* Hide unsupported message by default */
 }
 
 #notSupported h1 {
-    color: #b41a1a;
-    margin-bottom: 20px;
+    color: #b41a1a; /* Set text color */
+    margin-bottom: 20px; /* Add bottom margin */
 }
 
 #notSupported img {
-    display: block;
-    margin: 0 auto;
+    display: block; /* Display image as block element */
+    margin: 0 auto; /* Center image horizontally */
 }
 
+/* ASCII art styles */
 #ascii {
-    font-family: 'Courier New', 'Courier', monospace;
-    font-size: 10px;
-    line-height: 10px;
-    letter-spacing: -1.5px;
-    text-align: center;
+    font-family: 'Courier New', 'Courier', monospace; /* Specify font family */
+    font-size: 10px; /* Set font size */
+    line-height: 10px; /* Set line height */
+    letter-spacing: -1.5px; /* Set letter spacing */
+    text-align: center; /* Center align text */
 }
 
+/* GitHub links styles */
 #fork,
-#idevelop {
-    display: block;
-    position: fixed;
-    z-index: 10;
-    top: 0;
-    right: 30px;
-    padding: 10px 50px 10px 10px;
-    background: url('../img/github-logo.png') #100404 no-repeat 95% 50%;
-    border: 1px solid #170505;
-    border-top: 0;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-weight: 500;
-    font-size: 14px;
-    text-decoration: none;
-    color: #fff;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
+#QC20DK {
+    display: block; /* Display as block element */
+    position: fixed; /* Set position to fixed */
+    z-index: 10; /* Set z-index */
+    top: 0; /* Position from top */
+    right: 30px; /* Position from right */
+    padding: 10px 50px 10px 10px; /* Set padding */
+    background: url('../img/github-logo.png') #100404 no-repeat 95% 50%; /* Set background image */
+    border: 1px solid #170505; /* Set border */
+    border-top: 0; /* Remove top border */
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Specify font family */
+    font-weight: 500; /* Set font weight */
+    font-size: 14px; /* Set font size */
+    text-decoration: none; /* Remove underline */
+    color: #fff; /* Set text color */
+    border-bottom-left-radius: 3px; /* Set border radius */
+    border-bottom-right-radius: 3px; /* Set border radius */
 }
 
+/* Hover styles for GitHub links */
 #fork:hover,
-#idevelop:hover {
-    text-decoration: underline;
+#QC20DK:hover {
+    text-decoration: underline; /* Underline on hover */
 }
 
-#idevelop {
-    border: 1px solid #eee;
-    border-top: 0;
-    color: #333;
-    right: 200px;
-    background: url('../images/idevelop.png') #fff no-repeat 95% 50%;
-}
-
+/* Controls styles */
 .controls {
-    text-align: center;
+    text-align: center; /* Center align content */
     display: flex; /* Make controls flex container */
     justify-content: center; /* Center content horizontally */
-    margin-top: 20px; /* Adjust as needed */
+    margin-top: 20px; /* Add top margin */
 }
 
+/* Button styles */
 .controls button {
-    margin: 0 5px; /* Adjust spacing between buttons */
-    width: 150px; /* Adjust button width */
-	height: 50px; /* Adjust button height */
+    margin: 0 5px; /* Set margin between buttons */
+    width: 150px; /* Set button width */
+    height: 50px; /* Set button height */
 }
 
+/* Color inversion styles */
 .invert-colors {
-    background-color: black;
-    color: white;
+    background-color: black; /* Set background color */
+    color: white; /* Set text color */
 }
 
-/* Center the controls */
-.controls {
-    text-align: center;
-    margin-top: 20px;
-}
-
-/* Button style */
-.controls button {
-    margin: 0 5px;
-    width: 150px;
-    color:#3f0e0e; 
-    font-weight: bold;
-}
-
-/* Toggle container style */
+/* Toggle container styles */
 .toggle-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 10;
+    position: fixed; /* Set position to fixed */
+    bottom: 20px; /* Position from bottom */
+    right: 20px; /* Position from right */
+    z-index: 10; /* Set z-index */
 }
 
-/* Toggle checkbox style */
+/* Toggle checkbox styles */
 .toggle-checkbox {
-    display: none;
+    display: none; /* Hide checkbox */
 }
 
-/* Toggle label style */
+/* Toggle label styles */
 .toggle-label {
-    display: inline-block;
-    width: 50px;
-    height: 30px;
-    background-color: #2a2a2a;
-    border-radius: 15px;
-    position: relative;
-    cursor: pointer;
+    display: inline-block; /* Display as inline-block */
+    width: 50px; /* Set label width */
+    height: 30px; /* Set label height */
+    background-color: #2a2a2a; /* Set background color */
+    border-radius: 15px; /* Set border radius */
+    position: relative; /* Set position to relative */
+    cursor: pointer; /* Set cursor to pointer */
 }
 
-/* Toggle label indicator style */
+/* Toggle label indicator styles */
 .toggle-label:before {
-    content: '';
-    position: absolute;
-    width: 25px;
-    height: 25px;
-    background-color: white;
-    border-radius: 50%;
-    transition: 0.3s;
-    top: 50%;
-    transform: translateY(-50%);
-    left: 2px;
+    content: ''; /* Empty content */
+    position: absolute; /* Set position to absolute */
+    width: 25px; /* Set indicator width */
+    height: 25px; /* Set indicator height */
+    background-color: white; /* Set indicator background color */
+    border-radius: 50%; /* Set border radius */
+    transition: 0.3s; /* Set transition duration */
+    top: 50%; /* Position from top */
+    transform: translateY(-50%); /* Center vertically */
+    left: 2px; /* Position from left */
 }
 
-/* Toggle checkbox checked state */
+/* Toggle checkbox checked state styles */
 .toggle-checkbox:checked + .toggle-label {
-    background-color: #0F0; /* Green color for checked state */
+    background-color: #0F0; /* Set background color for checked state */
 }
 
 /* Toggle label indicator position for checked state */
 .toggle-checkbox:checked + .toggle-label:before {
-    left: calc(100% - 27px);
+    left: calc(100% - 27px); /* Position indicator for checked state */
 }
 
+/* Made by link styles */
 .made-by {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-style: italic;
-    text-decoration: none;
-    color: #3f0e0e; /* Default color */
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Specify font family */
+    font-style: italic; /* Set font style to italic */
+    text-decoration: none; /* Remove underline */
+    color: #3f0e0e; /* Set text color */
 }
 
+/* Hover styles for made by link */
 .made-by:hover .text {
-    color: #c61313; /* Change color on hover */
+    color: #c61313; /* Change text color on hover */
 }
 
+/* Reset font style for italic */
 .made-by .text i {
-    font-style: normal; /* Reset font style for italic */
+    font-style: normal; /* Reset font style */
 }
 
-/* Apply the fade-in animation to elements */
+/* Animation styles */
 .fade-in {
     opacity: 0; /* Start with 0 opacity */
-    animation: fadeIn ease-in-out 0.5s forwards; /* Animation duration and timing function */
+    animation: fadeIn ease-in-out 0.5s forwards; /* Apply fade-in animation */
 }
 
-/* Define the keyframes for the fade-in animation */
+/* Keyframes for fade-in animation */
 @keyframes fadeIn {
     from {
         opacity: 0; /* Start with 0 opacity */
@@ -178,18 +168,21 @@ h1 {
     }
 }
 
+/* Container styles */
 #container {
-    position: relative;
+    position: relative; /* Set position to relative */
 }
 
+/* Combined canvas styles */
 #combinedCanvas {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: absolute; /* Set position to absolute */
+    top: 0; /* Position from top */
+    left: 0; /* Position from left */
 }
 
+/* Button styles */
 #button1,
 #button2 {
-    position: relative;
+    position: relative; /* Set position to relative */
     z-index: 1; /* Ensure buttons are above the canvas */
 }
