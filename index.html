@@ -1,39 +1,82 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-    <title>ascii camera</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="css/main.css"/>
-    <link href="/favicon.png" rel="icon" type="image/png" />
-    <meta name="mobile-web-app-capable" content="yes">
+    <title>AsciiVision</title>
+
+    <!-- Full-bleed on every device: viewport-fit=cover lets us draw under the iPhone notch -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content="AsciiVision turns light into letters. Your camera, rendered live as ASCII art. It starts by itself and introduces itself." />
+    <meta name="theme-color" content="#020a05" />
+    <meta name="color-scheme" content="dark light" />
+
+    <!-- Behave like an app when added to a home screen -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="AsciiVision" />
+
+    <meta property="og:title" content="AsciiVision" />
+    <meta property="og:description" content="Your camera, rendered live as ASCII art." />
+    <meta property="og:type" content="website" />
+
+    <link rel="icon" href="img/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+    <link rel="stylesheet" href="css/main.css" />
 </head>
 <body>
-    <h1 id="info">Please allow this page to access your camera.</h1>
+    <!-- The art itself: one canvas for the letters, one tiny canvas that is scaled up into a soft glow -->
+    <main id="stage">
+        <canvas id="view" role="img" aria-label="Live ASCII art, drawn from your camera or from a generative animation"></canvas>
+        <canvas id="glow" aria-hidden="true"></canvas>
+        <div id="fx" aria-hidden="true"></div>
+        <div id="flash" aria-hidden="true"></div>
+    </main>
 
-    <div id="notSupported">s
-        <h1>Your browser does not support the Camera API.</h1>
-        <img src="images/screenshot.png" align="center" />
+    <!-- Controls. They fade away by themselves when you are not using them -->
+    <div id="chrome" class="chrome is-hidden">
+        <header class="top">
+            <a class="pill brand" href="https://github.com/QC20" target="_blank" rel="noopener">
+                <b>AsciiVision</b>
+                <small>Made by Jonas Kjeldmand Jensen</small>
+            </a>
+            <a id="fork" class="pill" href="https://github.com/QC20/AsciiVision" target="_blank" rel="noopener" aria-label="View on GitHub">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .5A11.5 11.5 0 0 0 .5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.76 2.69 1.25 3.35.96.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"/></svg>
+                <span class="gh-text">GitHub</span>
+            </a>
+        </header>
+
+        <nav id="dock" class="dock" aria-label="Controls">
+            <button class="btn" id="btnPause" type="button"><span class="ico"></span><span class="lbl">Pause</span></button>
+            <button class="btn" id="btnCamera" type="button" aria-pressed="false"><span class="ico"></span><span class="lbl">Camera</span></button>
+            <button class="btn" id="btnTheme" type="button"><span class="ico"></span><span class="lbl">Theme</span></button>
+            <button class="btn" id="btnGlyphs" type="button"><span class="ico"></span><span class="lbl">Glyphs</span></button>
+            <button class="btn" id="btnFlip" type="button" hidden><span class="ico"></span><span class="lbl">Flip</span></button>
+            <button class="btn" id="btnSnap" type="button"><span class="ico"></span><span class="lbl">Snap</span></button>
+            <button class="btn" id="btnVoice" type="button" aria-pressed="true" hidden><span class="ico"></span><span class="lbl">Voice</span></button>
+            <button class="btn" id="btnFull" type="button" hidden><span class="ico"></span><span class="lbl">Fullscreen</span></button>
+        </nav>
     </div>
 
-    <pre id="ascii"></pre>
-    <div class="controls">
-        <button id="button" class="big">Start</button>
-        <button id="invertButton" class="big">Invert</button>
-    </div>
-    <div id="colorToggleButton" class="toggle-container">
-        <input type="checkbox" id="toggleColorCheckbox" class="toggle-checkbox">
-        <label for="toggleColorCheckbox" class="toggle-label"></label>
-    </div>
+    <!-- The narrator: AsciiVision introduces itself here, typed out and (when the browser allows it) spoken -->
+    <div id="caption" class="caption" aria-hidden="true"><span id="captionText"></span><span class="caret"></span></div>
+    <p id="sr" class="sr-only" role="status" aria-live="polite"></p>
+    <button id="voiceHint" class="pill hint" type="button" hidden>Tap for voice</button>
+    <div id="toast" class="toast" aria-hidden="true"></div>
+    <pre id="debug" class="debug" hidden></pre>
 
-    <a href="https://github.com/QC20/AsciiVision" id="fork" target="_blank">View on GitHub</a>
-    <a href="https://github.com/QC20/#bottom" class="made-by" target="_blank">
-		<span class="text"><i>Made by </i><br>Jonas Kjeldmand Jensen</span>
-	</a>
-    
+    <noscript>
+        <div class="noscript">
+            <h1>AsciiVision</h1>
+            <p>This page turns your camera into live ASCII art, and that needs JavaScript. Please enable it and reload.</p>
+        </div>
+    </noscript>
 
+    <script src="script/device.js"></script>
     <script src="script/camera.js"></script>
     <script src="script/ascii.js"></script>
+    <script src="script/scenes.js"></script>
+    <script src="script/narrator.js"></script>
     <script src="script/app.js"></script>
 </body>
 </html>
-

@@ -1,188 +1,538 @@
-/* Global styles */
+/* ---------- Design tokens ----------
+   --bg / --fg / --accent / --glow are rewritten by app.js every time the theme changes. */
+:root {
+    --bg: #020a05;
+    --fg: #39ff7a;
+    --accent: #39ff7a;
+    --glow: 0.55;
+
+    --ui: #f2f4f1;
+    --ui-dim: rgba(242, 244, 241, 0.64);
+    --glass: rgba(10, 12, 11, 0.6);
+    --glass-edge: rgba(255, 255, 255, 0.14);
+
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", "Roboto Mono", "Courier New", monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+    /* Keep clear of notches, rounded corners and the iOS home indicator */
+    --pad-top: 14px;
+    --pad-side: 16px;
+    --pad-bottom: 14px;
+}
+
+@supports (padding: max(0px)) {
+    :root {
+        --pad-top: max(14px, env(safe-area-inset-top));
+        --pad-side: max(16px, env(safe-area-inset-left), env(safe-area-inset-right));
+        --pad-bottom: max(14px, env(safe-area-inset-bottom));
+    }
+}
+
+/* ---------- Page ---------- */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden; /* it is a full-screen canvas, never a scrolling page */
+    background: var(--bg);
+    color: var(--ui);
+    font-family: var(--sans);
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none; /* no rubber-banding or pull-to-refresh */
+}
+
 body {
-    padding: 50px; /* Add padding to body */
-    background: white; /* Set background color */
-    color: black; /* Set text color */
+    position: fixed; /* stops iOS from sliding the page around under your finger */
+    top: 0;
+    left: 0;
+    width: 100%;
 }
 
-/* Header styles */
-h1 {
-    font-family: 'Helvetica neue', 'Helvetica', 'Arial', sans-serif; /* Specify font family */
-    font-size: 48px; /* Set font size */
-    font-weight: 300; /* Set font weight */
-    color: #999; /* Set text color */
-    text-align: center; /* Center align text */
+body.idle {
+    cursor: none; /* the mouse arrow gets out of the way when the controls fade */
 }
 
-/* Styles for unsupported message */
-#notSupported {
-    display: none; /* Hide unsupported message by default */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
 }
 
-#notSupported h1 {
-    color: #b41a1a; /* Set text color */
-    margin-bottom: 20px; /* Add bottom margin */
+/* ---------- Stage: the art and its effects ---------- */
+#stage,
+#fx,
+#flash {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
 }
 
-#notSupported img {
-    display: block; /* Display image as block element */
-    margin: 0 auto; /* Center image horizontally */
+#stage {
+    touch-action: none; /* we handle swipes and taps ourselves */
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
 }
 
-/* ASCII art styles */
-#ascii {
-    font-family: 'Courier New', 'Courier', monospace; /* Specify font family */
-    font-size: 10px; /* Set font size */
-    line-height: 10px; /* Set line height */
-    letter-spacing: -1.5px; /* Set letter spacing */
-    text-align: center; /* Center align text */
+#view,
+#glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
 }
 
-/* GitHub links styles */
-#fork,
-#QC20DK {
-    display: block; /* Display as block element */
-    position: fixed; /* Set position to fixed */
-    z-index: 10; /* Set z-index */
-    top: 0; /* Position from top */
-    right: 30px; /* Position from right */
-    padding: 10px 50px 10px 10px; /* Set padding */
-    background: url('../img/github-logo.png') #100404 no-repeat 95% 50%; /* Set background image */
-    border: 1px solid #170505; /* Set border */
-    border-top: 0; /* Remove top border */
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Specify font family */
-    font-weight: 500; /* Set font weight */
-    font-size: 14px; /* Set font size */
-    text-decoration: none; /* Remove underline */
-    color: #fff; /* Set text color */
-    border-bottom-left-radius: 3px; /* Set border radius */
-    border-bottom-right-radius: 3px; /* Set border radius */
+#view {
+    animation: boot 1.4s ease-out both;
 }
 
-/* Hover styles for GitHub links */
-#fork:hover,
-#QC20DK:hover {
-    text-decoration: underline; /* Underline on hover */
+/* A quarter-resolution copy of the art, stretched back up and added on top: a cheap, GPU-friendly bloom */
+#glow {
+    mix-blend-mode: screen;
+    opacity: var(--glow);
+    pointer-events: none;
+    transition: opacity 0.5s;
 }
 
-/* Controls styles */
-.controls {
-    text-align: center; /* Center align content */
-    display: flex; /* Make controls flex container */
-    justify-content: center; /* Center content horizontally */
-    margin-top: 20px; /* Add top margin */
+/* Vignette: darkens the corners so the art feels lit from the middle */
+#fx {
+    pointer-events: none;
+    background: radial-gradient(ellipse 120% 120% at 50% 50%, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.5) 100%);
 }
 
-/* Button styles */
-.controls button {
-    margin: 0 5px; /* Set margin between buttons */
-    width: 150px; /* Set button width */
-    height: 50px; /* Set button height */
+/* Scanlines for the two retro-terminal themes */
+#fx::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 0.5s;
+    background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0, rgba(0, 0, 0, 0.2) 1px, transparent 1px, transparent 3px);
 }
 
-/* Color inversion styles */
-.invert-colors {
-    background-color: black; /* Set background color */
-    color: white; /* Set text color */
+[data-theme="phosphor"] #fx::after,
+[data-theme="amber"] #fx::after {
+    opacity: 1;
 }
 
-/* Toggle container styles */
-.toggle-container {
-    position: fixed; /* Set position to fixed */
-    bottom: 20px; /* Position from bottom */
-    right: 20px; /* Position from right */
-    z-index: 10; /* Set z-index */
+/* Dark glass over a pale background needs to be much more opaque to stay readable */
+[data-theme="paper"] {
+    --glass: rgba(22, 19, 14, 0.86);
+    --glass-edge: rgba(255, 255, 255, 0.2);
 }
 
-/* Toggle checkbox styles */
-.toggle-checkbox {
-    display: none; /* Hide checkbox */
+[data-theme="paper"] #fx {
+    background: radial-gradient(ellipse 120% 120% at 50% 50%, rgba(80, 60, 30, 0) 60%, rgba(80, 60, 30, 0.22) 100%);
 }
 
-/* Toggle label styles */
-.toggle-label {
-    display: inline-block; /* Display as inline-block */
-    width: 50px; /* Set label width */
-    height: 30px; /* Set label height */
-    background-color: #2a2a2a; /* Set background color */
-    border-radius: 15px; /* Set border radius */
-    position: relative; /* Set position to relative */
-    cursor: pointer; /* Set cursor to pointer */
+#flash {
+    pointer-events: none;
+    background: #fff;
+    opacity: 0;
 }
 
-/* Toggle label indicator styles */
-.toggle-label:before {
-    content: ''; /* Empty content */
-    position: absolute; /* Set position to absolute */
-    width: 25px; /* Set indicator width */
-    height: 25px; /* Set indicator height */
-    background-color: white; /* Set indicator background color */
-    border-radius: 50%; /* Set border radius */
-    transition: 0.3s; /* Set transition duration */
-    top: 50%; /* Position from top */
-    transform: translateY(-50%); /* Center vertically */
-    left: 2px; /* Position from left */
+#flash.go {
+    animation: flash 0.5s ease-out;
 }
 
-/* Toggle checkbox checked state styles */
-.toggle-checkbox:checked + .toggle-label {
-    background-color: #0F0; /* Set background color for checked state */
+@keyframes boot {
+    from { opacity: 0; filter: brightness(2.2); }
+    to   { opacity: 1; filter: brightness(1); }
 }
 
-/* Toggle label indicator position for checked state */
-.toggle-checkbox:checked + .toggle-label:before {
-    left: calc(100% - 27px); /* Position indicator for checked state */
+@keyframes flash {
+    from { opacity: 0.85; }
+    to   { opacity: 0; }
 }
 
-/* Made by link styles */
-.made-by {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Specify font family */
-    font-style: italic; /* Set font style to italic */
-    text-decoration: none; /* Remove underline */
-    color: #3f0e0e; /* Set text color */
+@keyframes blink {
+    50% { opacity: 0; }
 }
 
-/* Hover styles for made by link */
-.made-by:hover .text {
-    color: #c61313; /* Change text color on hover */
+@keyframes pulse {
+    50% { transform: scale(1.06); }
 }
 
-/* Reset font style for italic */
-.made-by .text i {
-    font-style: normal; /* Reset font style */
+/* ---------- Controls ---------- */
+.chrome {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: var(--pad-top) var(--pad-side) var(--pad-bottom);
+    pointer-events: none; /* only the buttons themselves catch taps, the rest falls through to the stage */
+    transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-/* Animation styles */
-.fade-in {
-    opacity: 0; /* Start with 0 opacity */
-    animation: fadeIn ease-in-out 0.5s forwards; /* Apply fade-in animation */
+.chrome > * {
+    pointer-events: auto;
 }
 
-/* Keyframes for fade-in animation */
-@keyframes fadeIn {
-    from {
-        opacity: 0; /* Start with 0 opacity */
+.chrome.is-hidden {
+    opacity: 0;
+    transform: translateY(6px);
+}
+
+.chrome.is-hidden > * {
+    pointer-events: none;
+}
+
+/* A keyboard user tabbing into hidden controls brings them back */
+.chrome.is-hidden:focus-within {
+    opacity: 1;
+    transform: none;
+}
+
+.top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 9px 13px;
+    border-radius: 14px;
+    background: var(--glass);
+    border: 1px solid var(--glass-edge);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    backdrop-filter: blur(14px) saturate(1.4);
+    color: var(--ui);
+    text-decoration: none;
+    font: 500 13px/1 var(--sans);
+    transition: background 0.2s, border-color 0.2s;
+}
+
+a.pill:hover {
+    border-color: var(--accent);
+}
+
+.brand {
+    display: block;
+}
+
+.brand b {
+    display: block;
+    font: 600 15px/1 var(--mono);
+    letter-spacing: 0.02em;
+}
+
+.brand small {
+    display: block;
+    margin-top: 5px;
+    font: 400 11px/1.2 var(--sans);
+    color: var(--ui-dim);
+}
+
+#fork svg {
+    width: 18px;
+    height: 18px;
+}
+
+.gh-text {
+    display: none;
+    margin-left: 8px;
+}
+
+.dock {
+    align-self: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 100%;
+    padding: 4px;
+    border-radius: 28px;
+    background: var(--glass);
+    border: 1px solid var(--glass-edge);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    backdrop-filter: blur(14px) saturate(1.4);
+}
+
+.btn {
+    -webkit-appearance: none;
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 44px;
+    margin: 2px;
+    padding: 0 10px;
+    border: 0;
+    border-radius: 22px;
+    background: transparent;
+    color: var(--ui);
+    font: 500 13px/1 var(--sans);
+    cursor: pointer;
+    touch-action: manipulation; /* no double-tap zoom delay */
+    transition: background 0.2s, color 0.2s, transform 0.12s;
+}
+
+.btn[hidden] {
+    display: none;
+}
+
+.btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.btn:active {
+    transform: scale(0.93);
+}
+
+.btn.is-on,
+.btn[aria-pressed="true"] {
+    color: var(--accent);
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.btn:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+}
+
+.btn:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.btn svg {
+    display: block;
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Labels are always there for screen readers, but only drawn when there is room */
+.lbl {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* ---------- Narrator ---------- */
+.caption {
+    position: fixed;
+    left: 50%;
+    bottom: 120px;
+    z-index: 4;
+    width: max-content;
+    max-width: calc(100vw - 32px);
+    padding: 12px 18px;
+    border-radius: 16px;
+    background: var(--glass);
+    border: 1px solid var(--glass-edge);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    backdrop-filter: blur(14px) saturate(1.4);
+    color: var(--ui);
+    font: 500 16px/1.45 var(--mono);
+    text-align: center;
+    opacity: 0;
+    transform: translate(-50%, 8px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+    pointer-events: none;
+}
+
+@supports (bottom: max(0px)) {
+    .caption {
+        bottom: calc(max(14vh, 108px) + env(safe-area-inset-bottom));
+        max-width: min(92vw, 680px);
+        font-size: clamp(14px, 1.1vw + 10px, 22px);
     }
-    to {
-        opacity: 1; /* End with 1 opacity */
+}
+
+.caption.on {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+.caret {
+    display: inline-block;
+    width: 0.55em;
+    height: 1.05em;
+    margin-left: 3px;
+    vertical-align: -0.15em;
+    background: var(--accent);
+    animation: blink 1s steps(1) infinite;
+}
+
+.hint {
+    position: fixed;
+    left: var(--pad-side);
+    top: calc(var(--pad-top) + 56px);
+    z-index: 6;
+    cursor: pointer;
+    color: var(--accent);
+    animation: pulse 1.8s ease-in-out infinite;
+}
+
+.hint[hidden] {
+    display: none;
+}
+
+.toast {
+    position: fixed;
+    left: 50%;
+    top: calc(var(--pad-top) + 8px);
+    z-index: 7;
+    padding: 9px 16px;
+    border-radius: 999px;
+    background: var(--glass);
+    border: 1px solid var(--glass-edge);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    color: var(--ui);
+    font: 500 13px/1 var(--mono);
+    white-space: nowrap;
+    opacity: 0;
+    transform: translate(-50%, -6px);
+    transition: opacity 0.25s, transform 0.25s;
+    pointer-events: none;
+}
+
+.toast.on {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+.debug {
+    position: fixed;
+    right: var(--pad-side);
+    top: calc(var(--pad-top) + 56px);
+    z-index: 9;
+    text-align: right;
+    margin: 0;
+    padding: 6px 8px;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.7);
+    color: #9f9;
+    font: 11px/1.4 var(--mono);
+    pointer-events: none;
+}
+
+.debug[hidden] {
+    display: none;
+}
+
+.noscript {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: var(--bg);
+    color: var(--ui);
+    font-family: var(--mono);
+    text-align: center;
+}
+
+/* ---------- Adapting to the device ---------- */
+
+/* Narrow phones: slightly tighter buttons so the whole dock fits on one line */
+@media (max-width: 400px) {
+    .btn {
+        min-width: 40px;
+        padding: 0 6px;
     }
 }
 
-/* Container styles */
-#container {
-    position: relative; /* Set position to relative */
+/* Roomy screens with a mouse or trackpad get text labels and shortcuts */
+@media (min-width: 720px) and (hover: hover) and (pointer: fine) {
+    .btn {
+        padding: 0 14px;
+    }
+
+    .lbl {
+        position: static;
+        width: auto;
+        height: auto;
+        margin-left: 8px;
+        overflow: visible;
+        clip: auto;
+    }
+
+    .gh-text {
+        display: inline;
+    }
 }
 
-/* Combined canvas styles */
-#combinedCanvas {
-    position: absolute; /* Set position to absolute */
-    top: 0; /* Position from top */
-    left: 0; /* Position from left */
+/* Phones on their side: there is very little height, so make everything compact */
+@media (max-height: 460px) {
+    .caption {
+        bottom: calc(var(--pad-bottom) + 64px);
+        padding: 8px 14px;
+    }
+
+    .brand small {
+        display: none;
+    }
 }
 
-/* Button styles */
-#button1,
-#button2 {
-    position: relative; /* Set position to relative */
-    z-index: 1; /* Ensure buttons are above the canvas */
+/* Don't backdrop-blur on weaker devices, where it costs real frames (app.js adds this class) */
+.lite .pill,
+.lite .dock,
+.lite .caption,
+.lite .toast {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: rgba(10, 12, 11, 0.82);
+}
+
+/* Respect people who ask for less motion */
+@media (prefers-reduced-motion: reduce) {
+    #view,
+    .caret,
+    .hint {
+        animation: none;
+    }
+
+    #flash.go {
+        animation: none;
+    }
+
+    .chrome {
+        transition: opacity 0.2s;
+        transform: none;
+    }
+
+    .caption,
+    .toast {
+        transition: opacity 0.2s;
+        transform: translate(-50%, 0);
+    }
 }
