@@ -21,7 +21,9 @@ Come back later and it greets you with a shorter hello and goes straight to the 
 
 ## Features
 - **Real-time ASCII art** from your webcam, with automatic exposure so it looks good in a dim room and a sunny one.
-- **Five themes:** phosphor green, ink, paper (dark ink on a pale page, like a print), amber terminal and full colour, where every letter takes the colour of what the camera sees.
+- **Follows day and night.** By default the theme is *auto*: a dark system gets the glowing green phosphor terminal, a light one gets paper. It switches live when the system does (sunset, a schedule, the toggle in Control Centre), and the browser's own toolbar colour follows along. Browsers that report no preference get night between 19:00 and 07:00.
+- **Five themes to choose from instead:** phosphor green, ink, paper (dark ink on a pale page, like a print), amber terminal and full colour, where every letter takes the colour of what the camera sees. The controls take their colours from the theme too.
+- **A sketch-style interface:** a title plate, a live status chip (`LIVE` or `DEMO`, frame rate, grid size, character set), a grouped toolbar with keyboard shortcuts shown on desktop, and viewfinder corner marks while the controls are away.
 - **Four character sets:** classic (the original), dense (70 levels), blocks and binary.
 - **Motion shimmer:** parts of the picture that move glow a little brighter.
 - **Snapshots** with a small watermark: the share sheet on phones, a download everywhere else.
@@ -42,12 +44,13 @@ Come back later and it greets you with a shorter hello and goes straight to the 
 | Fullscreen (where supported) | Fullscreen button | `F` |
 | Next demo scene | | `D` |
 
-Your theme, character set and voice choice are remembered between visits.
+The Theme button and `T` cycle through *auto* and then each theme. Your choice is remembered between visits, along with the character set and voice. Choosing *auto* again goes back to following the system.
 
 ## Works on every screen
 AsciiVision looks at the device and adapts:
 
 - **Phone, tablet or desktop** is detected (including iPadOS, which pretends to be a Mac) and picks the letter size: small and sharp on a phone, larger on 4K desktops. Rotating the device or resizing the window rebuilds the grid.
+- **Each kind of screen gets its own toolbar.** Phones get a single row of icons that shares out the width (checked down to a 320px iPhone SE, in portrait and landscape). Tablets get large touch targets with the label under each icon. Mouse and trackpad get labels beside the icons and, on wide windows, the keyboard shortcut for each control.
 - **Camera video fills the screen** without stretching, in portrait and landscape. Selfie cameras are mirrored, rear cameras are not.
 - **Notches and home indicators** are respected, and the controls stay clear of them. The interface is full-screen with no scrolling or bounce.
 - **Performance adapts:** the frame rate and pixel density are chosen from the device's capabilities, and if frames still take too long the letters get a little bigger and fewer until it runs smoothly.
@@ -62,7 +65,7 @@ Handy for testing, or for linking to a specific look:
 
 | Option | Example | Effect |
 |---|---|---|
-| `theme` | `?theme=amber` | `phosphor`, `ink`, `paper`, `amber` or `color` |
+| `theme` | `?theme=amber` | `auto` (the default), `phosphor`, `ink`, `paper`, `amber` or `color` |
 | `glyphs` | `?glyphs=blocks` | `classic`, `dense`, `blocks` or `binary` |
 | `scene` | `?scene=donut` | start on `plasma`, `donut`, `rain` or `lava` |
 | `camera=off` | `?camera=off` | never ask for the camera |

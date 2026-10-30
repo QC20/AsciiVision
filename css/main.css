@@ -1,23 +1,33 @@
 /* ---------- Design tokens ----------
-   --bg / --fg / --accent / --glow are rewritten by app.js every time the theme changes. */
+   The picture colours (--bg --fg --accent --glow) are written by app.js whenever the theme changes.
+   The interface colours (--ui --glass --edge ...) follow the theme from this file, so the controls
+   always look like they belong to whatever is on the screen.
+
+   Before app.js has run, the page already honours the system's light/dark setting, so there is
+   never a flash of the wrong colour. */
 :root {
     --bg: #020a05;
     --fg: #39ff7a;
     --accent: #39ff7a;
     --glow: 0.55;
 
-    --ui: #f2f4f1;
-    --ui-dim: rgba(242, 244, 241, 0.64);
-    --glass: rgba(10, 12, 11, 0.6);
-    --glass-edge: rgba(255, 255, 255, 0.14);
+    --ui: #dcfce8;
+    --ui-dim: rgba(220, 252, 232, 0.62);
+    --glass: rgba(2, 14, 7, 0.62);
+    --glass-solid: rgba(2, 14, 7, 0.92);
+    --edge: rgba(57, 255, 122, 0.22);
+    --sheen: rgba(255, 255, 255, 0.05);
+    --hover: rgba(255, 255, 255, 0.08);
+    --shade: rgba(0, 0, 0, 0.55);
 
     --mono: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", "Roboto Mono", "Courier New", monospace;
-    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 
     /* Keep clear of notches, rounded corners and the iOS home indicator */
     --pad-top: 14px;
     --pad-side: 16px;
     --pad-bottom: 14px;
+    --mark-x: 12px;
+    --mark-y: 12px;
 }
 
 @supports (padding: max(0px)) {
@@ -25,6 +35,72 @@
         --pad-top: max(14px, env(safe-area-inset-top));
         --pad-side: max(16px, env(safe-area-inset-left), env(safe-area-inset-right));
         --pad-bottom: max(14px, env(safe-area-inset-bottom));
+        --mark-x: max(12px, env(safe-area-inset-left), env(safe-area-inset-right));
+        --mark-y: max(12px, env(safe-area-inset-top), env(safe-area-inset-bottom));
+    }
+}
+
+/* Interface colours per theme. Dark themes get dark glass with a tint of their own colour; paper gets pale glass. */
+[data-theme="phosphor"] {
+    --ui: #dcfce8;
+    --ui-dim: rgba(220, 252, 232, 0.62);
+    --glass: rgba(2, 14, 7, 0.62);
+    --glass-solid: rgba(2, 14, 7, 0.92);
+    --edge: rgba(57, 255, 122, 0.22);
+}
+
+[data-theme="ink"] {
+    --ui: #f1f1ec;
+    --ui-dim: rgba(241, 241, 236, 0.62);
+    --glass: rgba(14, 14, 17, 0.62);
+    --glass-solid: rgba(14, 14, 17, 0.92);
+    --edge: rgba(255, 255, 255, 0.16);
+}
+
+[data-theme="amber"] {
+    --ui: #ffecc4;
+    --ui-dim: rgba(255, 236, 196, 0.62);
+    --glass: rgba(22, 11, 0, 0.62);
+    --glass-solid: rgba(22, 11, 0, 0.92);
+    --edge: rgba(255, 178, 31, 0.26);
+}
+
+[data-theme="color"] {
+    --ui: #ffffff;
+    --ui-dim: rgba(255, 255, 255, 0.64);
+    --glass: rgba(8, 8, 12, 0.62);
+    --glass-solid: rgba(8, 8, 12, 0.92);
+    --edge: rgba(255, 255, 255, 0.18);
+}
+
+[data-theme="paper"] {
+    --bg: #f2eee4;
+    --fg: #16130e;
+    --accent: #e4572e;
+    --ui: #1c1812;
+    --ui-dim: rgba(28, 24, 18, 0.62);
+    --glass: rgba(246, 242, 232, 0.74);
+    --glass-solid: rgba(246, 242, 232, 0.95);
+    --edge: rgba(28, 24, 18, 0.2);
+    --sheen: rgba(255, 255, 255, 0.7);
+    --hover: rgba(28, 24, 18, 0.07);
+    --shade: rgba(60, 45, 20, 0.35);
+}
+
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme]) {
+        --bg: #f2eee4;
+        --fg: #16130e;
+        --accent: #e4572e;
+        --glow: 0;
+        --ui: #1c1812;
+        --ui-dim: rgba(28, 24, 18, 0.62);
+        --glass: rgba(246, 242, 232, 0.74);
+        --glass-solid: rgba(246, 242, 232, 0.95);
+        --edge: rgba(28, 24, 18, 0.2);
+        --sheen: rgba(255, 255, 255, 0.7);
+        --hover: rgba(28, 24, 18, 0.07);
+        --shade: rgba(60, 45, 20, 0.35);
     }
 }
 
@@ -39,7 +115,7 @@ html, body {
     overflow: hidden; /* it is a full-screen canvas, never a scrolling page */
     background: var(--bg);
     color: var(--ui);
-    font-family: var(--sans);
+    font-family: var(--mono);
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
     overscroll-behavior: none; /* no rubber-banding or pull-to-refresh */
@@ -132,14 +208,15 @@ body.idle {
     opacity: 1;
 }
 
-/* Dark glass over a pale background needs to be much more opaque to stay readable */
-[data-theme="paper"] {
-    --glass: rgba(22, 19, 14, 0.86);
-    --glass-edge: rgba(255, 255, 255, 0.2);
-}
-
+/* Paper is a printed page: a warm vignette instead of a dark one, and no glow */
 [data-theme="paper"] #fx {
     background: radial-gradient(ellipse 120% 120% at 50% 50%, rgba(80, 60, 30, 0) 60%, rgba(80, 60, 30, 0.22) 100%);
+}
+
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme]) #fx {
+        background: radial-gradient(ellipse 120% 120% at 50% 50%, rgba(80, 60, 30, 0) 60%, rgba(80, 60, 30, 0.22) 100%);
+    }
 }
 
 #flash {
@@ -167,7 +244,69 @@ body.idle {
 }
 
 @keyframes pulse {
-    50% { transform: scale(1.06); }
+    50% { transform: translateX(-50%) scale(1.05); }
+}
+
+@keyframes led {
+    50% { opacity: 0.45; }
+}
+
+/* ---------- Viewfinder corners ---------- */
+.marks {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0.75;
+    transition: opacity 0.5s ease;
+}
+
+.marks i {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 0 solid var(--accent);
+}
+
+.marks i:nth-child(1) { top: var(--mark-y); left: var(--mark-x); border-top-width: 1.5px; border-left-width: 1.5px; }
+.marks i:nth-child(2) { top: var(--mark-y); right: var(--mark-x); border-top-width: 1.5px; border-right-width: 1.5px; }
+.marks i:nth-child(3) { bottom: var(--mark-y); left: var(--mark-x); border-bottom-width: 1.5px; border-left-width: 1.5px; }
+.marks i:nth-child(4) { bottom: var(--mark-y); right: var(--mark-x); border-bottom-width: 1.5px; border-right-width: 1.5px; }
+
+/* The controls take the corners over, so the marks step aside while they are showing */
+html:not(.hud-hidden) .marks {
+    opacity: 0;
+}
+
+/* ---------- Shared glass panel ---------- */
+.panel {
+    background: var(--glass);
+    border: 1px solid var(--edge);
+    border-radius: 12px;
+    -webkit-backdrop-filter: blur(16px) saturate(1.5);
+    backdrop-filter: blur(16px) saturate(1.5);
+    box-shadow: inset 0 1px 0 var(--sheen), 0 12px 32px -14px var(--shade);
+    color: var(--ui);
+    font-family: var(--mono);
+}
+
+a.panel {
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+a.panel:hover {
+    border-color: var(--accent);
+}
+
+a.panel:focus-visible,
+.btn:focus-visible,
+.hint:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
 }
 
 /* ---------- Controls ---------- */
@@ -182,7 +321,7 @@ body.idle {
     flex-direction: column;
     justify-content: space-between;
     padding: var(--pad-top) var(--pad-side) var(--pad-bottom);
-    pointer-events: none; /* only the buttons themselves catch taps, the rest falls through to the stage */
+    pointer-events: none; /* only the controls themselves catch taps, the rest falls through to the stage */
     transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
@@ -209,86 +348,176 @@ body.idle {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+    gap: 10px;
 }
 
-.pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 9px 13px;
-    border-radius: 14px;
-    background: var(--glass);
-    border: 1px solid var(--glass-edge);
-    -webkit-backdrop-filter: blur(14px) saturate(1.4);
-    backdrop-filter: blur(14px) saturate(1.4);
-    color: var(--ui);
-    text-decoration: none;
-    font: 500 13px/1 var(--sans);
-    transition: background 0.2s, border-color 0.2s;
+.top-end {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
 }
 
-a.pill:hover {
-    border-color: var(--accent);
-}
-
-.brand {
+/* The sketch's title block, like the caption on a plate */
+.sketch {
     display: block;
+    min-width: 0;
+    padding: 10px 14px 11px;
 }
 
-.brand b {
+.sketch-name {
     display: block;
     font: 600 15px/1 var(--mono);
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
 }
 
-.brand small {
+.sketch-by {
     display: block;
-    margin-top: 5px;
-    font: 400 11px/1.2 var(--sans);
+    margin-top: 6px;
+    font: 400 11px/1.2 var(--mono);
+    letter-spacing: 0.02em;
+    color: var(--ui-dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* if a screen is ever too narrow, the credit trims itself instead of sliding under its neighbours */
+}
+
+.cursor {
+    display: inline-block;
+    width: 0.5em;
+    height: 0.95em;
+    margin-left: 4px;
+    vertical-align: -0.12em;
+    background: var(--accent);
+    animation: blink 1.1s steps(1) infinite;
+}
+
+/* Live status: a lamp, then the facts of the moment */
+.readout {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    height: 40px;
+    margin: 0;
+    padding: 0 14px;
+    font: 500 11px/1 var(--mono);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.led {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border: 1.5px solid var(--ui-dim);
+    border-radius: 50%;
+    transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.readout[data-mode="live"] .led {
+    border-color: var(--accent);
+    background: var(--accent);
+    box-shadow: 0 0 9px var(--accent);
+    animation: led 2.4s ease-in-out infinite;
+}
+
+.readout[data-mode="paused"] .led {
+    border-color: var(--ui-dim);
+    background: var(--ui-dim);
+}
+
+.ro-mode {
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.ro-more {
+    display: none;
     color: var(--ui-dim);
 }
 
-#fork svg {
+.ro-more small {
+    margin-left: 3px;
+    font-size: 10px;
+    opacity: 0.8;
+}
+
+.ro-sep {
+    margin: 0 8px;
+    opacity: 0.4;
+}
+
+.source {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    height: 40px;
+    min-width: 40px;
+    padding: 0 11px;
+    font: 500 11px/1 var(--mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.source svg {
+    display: block;
+    flex: none;
     width: 18px;
     height: 18px;
 }
 
-.gh-text {
+.source-text {
     display: none;
-    margin-left: 8px;
 }
 
+/* ---------- The toolbar ---------- */
 .dock {
     align-self: center;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    align-items: center;
     max-width: 100%;
-    padding: 4px;
-    border-radius: 28px;
-    background: var(--glass);
-    border: 1px solid var(--glass-edge);
-    -webkit-backdrop-filter: blur(14px) saturate(1.4);
-    backdrop-filter: blur(14px) saturate(1.4);
+    padding: 5px;
+    border-radius: 16px;
+}
+
+.group {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.sep {
+    flex: none;
+    width: 1px;
+    height: 24px;
+    margin: 0 4px;
+    background: var(--edge);
 }
 
 .btn {
     -webkit-appearance: none;
     appearance: none;
-    display: inline-flex;
+    position: relative;
+    display: flex;
+    flex: none;
     align-items: center;
     justify-content: center;
-    min-width: 44px;
-    height: 44px;
-    margin: 2px;
-    padding: 0 10px;
+    /* On a phone, share out the width so the whole row always fits, down to the smallest iPhone SE */
+    width: clamp(32px, calc((100vw - 2 * var(--pad-side) - 52px) / 8), 46px);
+    height: 46px;
+    margin: 0;
+    padding: 0;
     border: 0;
-    border-radius: 22px;
+    border-radius: 11px;
     background: transparent;
     color: var(--ui);
-    font: 500 13px/1 var(--sans);
+    font: 500 12px/1 var(--mono);
+    letter-spacing: 0.02em;
     cursor: pointer;
     touch-action: manipulation; /* no double-tap zoom delay */
-    transition: background 0.2s, color 0.2s, transform 0.12s;
+    transition: background 0.18s, color 0.18s, transform 0.12s;
 }
 
 .btn[hidden] {
@@ -296,25 +525,38 @@ a.pill:hover {
 }
 
 .btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--hover);
 }
 
 .btn:active {
-    transform: scale(0.93);
+    transform: scale(0.92);
+}
+
+/* "On" is a lit indicator under the icon, like a switch on a piece of kit */
+.btn::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 5px;
+    width: 0;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--accent);
+    transform: translateX(-50%);
+    transition: width 0.22s ease;
 }
 
 .btn.is-on,
 .btn[aria-pressed="true"] {
     color: var(--accent);
-    background: rgba(255, 255, 255, 0.07);
+}
+
+.btn.is-on::after,
+.btn[aria-pressed="true"]::after {
+    width: 14px;
 }
 
 .btn:focus {
-    outline: 2px solid var(--accent);
-    outline-offset: 1px;
-}
-
-.btn:focus:not(:focus-visible) {
     outline: none;
 }
 
@@ -324,7 +566,7 @@ a.pill:hover {
     height: 22px;
     fill: none;
     stroke: currentColor;
-    stroke-width: 1.8;
+    stroke-width: 1.7;
     stroke-linecap: round;
     stroke-linejoin: round;
 }
@@ -339,6 +581,17 @@ a.pill:hover {
     white-space: nowrap;
 }
 
+kbd {
+    display: none;
+    margin-left: 9px;
+    padding: 3px 5px 2px;
+    border: 1px solid var(--edge);
+    border-radius: 5px;
+    color: var(--ui-dim);
+    font: 600 10px/1.2 var(--mono);
+    letter-spacing: 0.02em;
+}
+
 /* ---------- Narrator ---------- */
 .caption {
     position: fixed;
@@ -347,15 +600,10 @@ a.pill:hover {
     z-index: 4;
     width: max-content;
     max-width: calc(100vw - 32px);
-    padding: 12px 18px;
-    border-radius: 16px;
-    background: var(--glass);
-    border: 1px solid var(--glass-edge);
-    -webkit-backdrop-filter: blur(14px) saturate(1.4);
-    backdrop-filter: blur(14px) saturate(1.4);
-    color: var(--ui);
+    padding: 13px 18px 13px 16px;
+    border-radius: 14px;
     font: 500 16px/1.45 var(--mono);
-    text-align: center;
+    text-align: left;
     opacity: 0;
     transform: translate(-50%, 8px);
     transition: opacity 0.45s ease, transform 0.45s ease;
@@ -364,7 +612,7 @@ a.pill:hover {
 
 @supports (bottom: max(0px)) {
     .caption {
-        bottom: calc(max(14vh, 108px) + env(safe-area-inset-bottom));
+        bottom: calc(max(14vh, 112px) + env(safe-area-inset-bottom));
         max-width: min(92vw, 680px);
         font-size: clamp(14px, 1.1vw + 10px, 22px);
     }
@@ -373,6 +621,12 @@ a.pill:hover {
 .caption.on {
     opacity: 1;
     transform: translate(-50%, 0);
+}
+
+.prompt {
+    margin-right: 0.8em;
+    color: var(--accent);
+    font-weight: 700;
 }
 
 .caret {
@@ -385,13 +639,23 @@ a.pill:hover {
     animation: blink 1s steps(1) infinite;
 }
 
-.hint {
+/* The hint and the toasts share one spot, just under the top bar */
+.hint,
+.toast {
     position: fixed;
-    left: var(--pad-side);
-    top: calc(var(--pad-top) + 56px);
-    z-index: 6;
-    cursor: pointer;
+    left: 50%;
+    top: calc(var(--pad-top) + 68px);
+    z-index: 7;
+    white-space: nowrap;
+    font: 500 12px/1 var(--mono);
+}
+
+.hint {
+    padding: 11px 16px;
+    border-radius: 999px;
     color: var(--accent);
+    cursor: pointer;
+    transform: translateX(-50%);
     animation: pulse 1.8s ease-in-out infinite;
 }
 
@@ -400,19 +664,8 @@ a.pill:hover {
 }
 
 .toast {
-    position: fixed;
-    left: 50%;
-    top: calc(var(--pad-top) + 8px);
-    z-index: 7;
-    padding: 9px 16px;
+    padding: 11px 16px;
     border-radius: 999px;
-    background: var(--glass);
-    border: 1px solid var(--glass-edge);
-    -webkit-backdrop-filter: blur(14px);
-    backdrop-filter: blur(14px);
-    color: var(--ui);
-    font: 500 13px/1 var(--mono);
-    white-space: nowrap;
     opacity: 0;
     transform: translate(-50%, -6px);
     transition: opacity 0.25s, transform 0.25s;
@@ -427,7 +680,7 @@ a.pill:hover {
 .debug {
     position: fixed;
     right: var(--pad-side);
-    top: calc(var(--pad-top) + 56px);
+    top: calc(var(--pad-top) + 68px);
     z-index: 9;
     text-align: right;
     margin: 0;
@@ -463,62 +716,194 @@ a.pill:hover {
 
 /* ---------- Adapting to the device ---------- */
 
-/* Narrow phones: slightly tighter buttons so the whole dock fits on one line */
-@media (max-width: 400px) {
-    .btn {
-        min-width: 40px;
-        padding: 0 6px;
+/* Compact phones (iPhone mini, SE, most Androids): a slightly tighter credit line keeps the whole name visible */
+@media (max-width: 389px) {
+    .sketch-by {
+        font-size: 10px;
+        letter-spacing: 0;
     }
 }
 
-/* Roomy screens with a mouse or trackpad get text labels and shortcuts */
-@media (min-width: 720px) and (hover: hover) and (pointer: fine) {
-    .btn {
+/* The very smallest (iPhone SE 1st gen): the status chip shrinks to just its lamp to leave room for the credit */
+@media (max-width: 359px) {
+    .ro-mode {
+        display: none;
+    }
+
+    .readout {
+        width: 40px;
+        justify-content: center;
+        padding: 0;
+    }
+}
+
+/* Anything wider than a phone: room for the readout's details and the word "source" */
+@media (min-width: 600px) {
+    .ro-more {
+        display: inline;
+    }
+
+    .source-text {
+        display: inline;
+    }
+
+    .source {
         padding: 0 14px;
+    }
+
+    .btn {
+        width: 48px;
+    }
+}
+
+/* Tablets and other touch screens with room to spare: big targets with the label tucked under the icon */
+@media (pointer: coarse) and (min-width: 600px) {
+    .btn {
+        flex-direction: column;
+        gap: 6px;
+        width: auto;
+        min-width: 66px;
+        height: 62px;
+        padding: 0 7px;
+    }
+
+    .btn::after {
+        top: 6px;
+        bottom: auto;
     }
 
     .lbl {
         position: static;
         width: auto;
         height: auto;
-        margin-left: 8px;
+        overflow: visible;
+        clip: auto;
+        font-size: 10px;
+        letter-spacing: 0.06em;
+        text-transform: lowercase;
+        color: var(--ui-dim);
+    }
+
+    .btn.is-on .lbl,
+    .btn[aria-pressed="true"] .lbl {
+        color: var(--accent);
+    }
+
+    .sep {
+        height: 34px;
+        margin: 0 6px;
+    }
+}
+
+/* Mouse or trackpad on a roomy screen: labels sit beside the icons */
+@media (hover: hover) and (pointer: fine) and (min-width: 720px) {
+    .btn {
+        width: auto;
+        height: 40px;
+        padding: 0 13px;
+    }
+
+    .btn::after {
+        bottom: 3px;
+    }
+
+    .lbl {
+        position: static;
+        width: auto;
+        height: auto;
+        margin-left: 9px;
         overflow: visible;
         clip: auto;
     }
 
-    .gh-text {
-        display: inline;
+    .btn svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .sep {
+        height: 22px;
     }
 }
 
-/* Phones on their side: there is very little height, so make everything compact */
+/* ...and once it is really wide, the keyboard shortcuts show too */
+@media (hover: hover) and (pointer: fine) and (min-width: 1180px) {
+    kbd {
+        display: inline-block;
+    }
+}
+
+/* Phones on their side: very little height, so everything is compact and icon-only again */
 @media (max-height: 460px) {
     .caption {
-        bottom: calc(var(--pad-bottom) + 64px);
+        bottom: calc(var(--pad-bottom) + 70px);
         padding: 8px 14px;
     }
 
-    .brand small {
+    .sketch {
+        padding: 9px 13px;
+    }
+
+    .sketch-by {
         display: none;
+    }
+
+    .readout,
+    .source {
+        height: 36px;
+    }
+
+    .hint,
+    .toast {
+        top: calc(var(--pad-top) + 46px);
+    }
+
+    .debug {
+        top: calc(var(--pad-top) + 46px);
+    }
+}
+
+@media (max-height: 460px) and (pointer: coarse) {
+    .btn {
+        flex-direction: row;
+        width: 46px;
+        height: 42px;
+    }
+
+    .btn::after {
+        top: auto;
+        bottom: 4px;
+    }
+
+    .lbl {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+    }
+
+    .sep {
+        height: 24px;
+        margin: 0 4px;
     }
 }
 
 /* Don't backdrop-blur on weaker devices, where it costs real frames (app.js adds this class) */
-.lite .pill,
-.lite .dock,
-.lite .caption,
-.lite .toast {
+.lite .panel {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
-    background: rgba(10, 12, 11, 0.82);
+    background: var(--glass-solid);
 }
 
 /* Respect people who ask for less motion */
 @media (prefers-reduced-motion: reduce) {
     #view,
     .caret,
-    .hint {
-        animation: none;
+    .cursor,
+    .hint,
+    .led {
+        animation: none !important;
     }
 
     #flash.go {

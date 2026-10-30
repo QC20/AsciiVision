@@ -117,7 +117,12 @@ var scenes = (function() {
 
         var data = c.getImageData(0, 0, g.cols, g.rows).data;
         var mask = new Float32Array(g.count);
-        for (var i = 0; i < g.count; i++) mask[i] = data[i * 4] / 255;
+        // Harden the soft edge of the lettering, so it reads as solid shapes instead of a fringe of random mid-tone characters
+        for (var i = 0; i < g.count; i++) {
+            var edge = (data[i * 4] / 255 - 0.3) / 0.4;
+            edge = edge < 0 ? 0 : (edge > 1 ? 1 : edge);
+            mask[i] = edge * edge * (3 - 2 * edge);
+        }
 
         // A halo: the mask grown by a couple of cells. The waves are darkened inside it so the lettering stands out.
         // Cells are about twice as tall as wide, so it grows 2 across and 1 down.
@@ -174,7 +179,7 @@ var scenes = (function() {
                     // Dim the waves (a lot around the letters), then paint the letters at full strength
                     m = title.mask[i] * amount;
                     v = v * (1 - 0.45 * amount) * (1 - 0.85 * title.halo[i] * amount) * (1 - m) +
-                        m * (0.88 + 0.12 * Math.sin(t * 3 + x * 9));
+                        m * (0.955 + 0.045 * Math.sin(t * 3 + x * 9)); // stays in the densest characters, so the name reads as solid lettering
                 }
                 lum[i] = v;
             }

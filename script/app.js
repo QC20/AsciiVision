@@ -12,7 +12,7 @@
       ascii     turns brightness into letters on the canvas
       narrator  captions and voice
 
-  Handy URL options:  ?theme=phosphor|ink|paper|amber|color   ?glyphs=classic|dense|blocks|binary
+  Handy URL options:  ?theme=auto|phosphor|ink|paper|amber|color   ?glyphs=classic|dense|blocks|binary
                       ?camera=off   ?voice=off   ?intro=off   ?scene=plasma|donut|rain|lava   ?debug
 */
 (function() {
@@ -141,8 +141,24 @@
 
     // ---------- Themes and glyphs ----------
 
-    function setTheme(id, announce) {
-        theme = themes[id] || themes.phosphor;
+    // "auto" follows the device, live: a dark screen gets the glowing green terminal, a light one gets paper.
+    // A browser that reports no preference at all gets night between 19:00 and 07:00 instead.
+    var darkQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+    var lightQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: light)') : null;
+    var themeMode = 'auto';
+    var modeOrder = ['auto'].concat(themeOrder);
+
+    function systemIsDark() {
+        if (darkQuery && darkQuery.matches) return true;
+        if (lightQuery && lightQuery.matches) return false;
+        var hour = new Date().getHours();
+        return hour < 7 || hour >= 19;
+    }
+
+    // `mode` is "auto" or the id of one theme. Only a deliberate choice is remembered as a choice.
+    function setTheme(mode, announce) {
+        themeMode = (mode === 'auto' || themes[mode]) ? mode : 'auto';
+        theme = themes[themeMode === 'auto' ? (systemIsDark() ? 'phosphor' : 'paper') : themeMode];
         var s = root.style;
         s.setProperty('--bg', theme.bg);
         s.setProperty('--fg', theme.fg);
@@ -150,25 +166,45 @@
         s.setProperty('--glow', profile.tier === 'low' ? 0 : theme.glow);
         root.setAttribute('data-theme', theme.id);
 
-        // Tint the phone's status bar / browser chrome to match
-        var meta = document.querySelector('meta[name="theme-color"]');
-        if (meta) meta.setAttribute('content', theme.bg);
+        // Tint the phone's status bar / browser chrome to match. The page started with one tag per colour scheme;
+        // from here on a single colour is right for both.
+        var metas = document.querySelectorAll('meta[name="theme-color"]');
+        for (var m = 0; m < metas.length; m++) {
+            metas[m].setAttribute('content', theme.bg);
+            metas[m].removeAttribute('media');
+        }
 
-        store.set('theme', theme.id);
+        store.set('themeMode', themeMode);
         state.step = true;
-        if (announce) toast('theme · ' + theme.name);
+        syncUI();
+        if (announce) toast('theme · ' + themeLabel());
+    }
+
+    function themeLabel() {
+        return themeMode === 'auto' ? 'auto (' + (theme.lightOnDark ? 'night' : 'day') + ')' : theme.name;
     }
 
     function cycleTheme(direction) {
-        var i = themeOrder.indexOf(theme.id) + (direction || 1);
-        setTheme(themeOrder[(i + themeOrder.length) % themeOrder.length], true);
+        var i = modeOrder.indexOf(themeMode) + (direction || 1);
+        setTheme(modeOrder[(i + modeOrder.length) % modeOrder.length], true);
     }
+
+    // When the system flips between light and dark (sunset, a schedule, the Control Centre toggle), so do we
+    function onSchemeChange() {
+        if (themeMode === 'auto') setTheme('auto', false);
+    }
+    [darkQuery, lightQuery].forEach(function(query) {
+        if (!query) return;
+        if (query.addEventListener) query.addEventListener('change', onSchemeChange);
+        else if (query.addListener) query.addListener(onSchemeChange);
+    });
 
     function setGlyphs(id, announce) {
         var set = ascii.setGlyphs(id);
         state.glyphs = set.id;
         store.set('glyphs', set.id);
         state.step = true;
+        updateReadout();
         if (announce) toast('glyphs · ' + set.name);
     }
 
@@ -263,6 +299,20 @@
     // slowest devices, which produce the fewest frames, are also the quickest to adapt.
     var perf = { ema: 0, frames: 0, since: 0, fps: 0, strikes: 0, checkAt: 0, warmUntil: 0 };
     var failed = false;
+
+    // The status chip in the top bar: LIVE or DEMO, and the numbers behind the picture
+    var readout = { el: $('readout'), mode: $('roMode'), fps: $('roFps'), grid: $('roGrid'), glyphs: $('roGlyphs') };
+
+    function updateReadout() {
+        var mode = state.paused ? 'paused' : (state.cameraLive ? 'live' : 'demo');
+        if (readout.el.getAttribute('data-mode') !== mode) {
+            readout.el.setAttribute('data-mode', mode);
+            readout.mode.textContent = mode;
+        }
+        readout.glyphs.textContent = state.glyphs;
+        if (grid) readout.grid.textContent = grid.cols + '×' + grid.rows;
+        readout.fps.textContent = perf.fps ? Math.round(perf.fps) : '--';
+    }
     var adaptive = !params.has('fixed');
 
     // Start judging afresh (after a resize, a rebuild of the grid, or coming back to the tab)
@@ -283,6 +333,7 @@
             perf.fps = perf.frames * 1000 / (now - perf.since);
             perf.frames = 0;
             perf.since = now;
+            if (!chrome.classList.contains('is-hidden')) updateReadout();
             if (!debugEl.hidden) {
                 debugEl.textContent = Math.round(perf.fps) + ' fps  ' + grid.cols + 'x' + grid.rows +
                     '  ' + profile.kind + '/' + profile.tier + '  dpr ' + profile.dpr +
@@ -352,7 +403,7 @@
             state.cameraLive ? 'Turn camera off (C)' : 'Turn camera on (C)');
         buttons.camera.setAttribute('aria-pressed', state.cameraLive ? 'true' : 'false');
 
-        setButton(buttons.theme, 'theme', 'Theme', 'Change theme (T, or swipe)');
+        setButton(buttons.theme, 'theme', 'Theme', 'Theme: ' + themeLabel() + ' (T, or swipe)');
         setButton(buttons.glyphs, 'glyphs', 'Glyphs', 'Change characters (G)');
         setButton(buttons.flip, 'flip', 'Flip', 'Front / rear camera (R)');
         buttons.flip.hidden = !(state.cameraLive && camera.cameras > 1);
@@ -364,6 +415,8 @@
 
         buttons.full.hidden = !profile.canFullscreen;
         setButton(buttons.full, isFullscreen() ? 'fullExit' : 'full', 'Fullscreen', 'Fullscreen (F)');
+
+        updateReadout();
     }
 
     function togglePause() {
@@ -513,9 +566,12 @@
         try { return !!chrome.querySelector(':focus-visible'); } catch (e) { return false; }
     }
 
+    // The root class is what lets the viewfinder corners know the controls are away
     function showHud() {
         chrome.classList.remove('is-hidden');
+        root.classList.remove('hud-hidden');
         document.body.classList.remove('idle');
+        updateReadout();
         clearTimeout(hudTimer);
         hudTimer = setTimeout(maybeHideHud, 3800);
     }
@@ -530,6 +586,7 @@
 
     function hideHud() {
         chrome.classList.add('is-hidden');
+        root.classList.add('hud-hidden');
         if (!profile.touch) document.body.classList.add('idle');
     }
 
@@ -709,8 +766,8 @@
             'font:700 20px monospace;color:#39ff7a;background:#020a05;padding:6px 10px', 'font:12px monospace;color:#39ff7a');
     }
 
-    // Settings, in order of priority: the URL, then what the visitor chose last time, then the device's own preference
-    var wantedTheme = params.get('theme') || store.get('theme') || (profile.prefersLight ? 'paper' : 'phosphor');
+    // Settings, in order of priority: the URL, then what the visitor chose last time, then "auto", which is the device's own preference
+    var wantedTheme = params.get('theme') || store.get('themeMode') || 'auto';
     var wantedGlyphs = params.get('glyphs') || store.get('glyphs') || 'classic';
     var wantedVoice = params.get('voice') !== 'off' && store.get('voice') !== '0';
 
