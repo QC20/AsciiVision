@@ -409,29 +409,33 @@ var ascii = (function() {
         glowCtx.putImageData(glowImage, 0, 0);
     }
 
-    // A picture of the current frame, signed with a small watermark
-    function snapshot(theme) {
-        var out = document.createElement('canvas');
-        out.width = view.width;
-        out.height = view.height;
-        var c = out.getContext('2d');
-        c.drawImage(view, 0, 0);
-
-        var size = Math.max(14, Math.round(out.width / 56));
+    // The small signature in the corner of every picture and video
+    function stamp(c, width, height, theme) {
+        var size = Math.max(14, Math.round(width / 56));
         c.font = '600 ' + size + 'px ' + FONT;
         c.textAlign = 'right';
         c.textBaseline = 'bottom';
         var label = 'AsciiVision';
         var w = c.measureText(label).width;
         var pad = size * 0.5;
-        var x = out.width - size;
-        var y = out.height - size;
+        var x = width - size;
+        var y = height - size;
         c.fillStyle = theme.bg;
         c.globalAlpha = 0.85;
         c.fillRect(x - w - pad, y - size - pad * 0.6, w + pad * 2, size + pad * 1.4);
         c.globalAlpha = 1;
         c.fillStyle = theme.color ? '#ffffff' : theme.fg;
         c.fillText(label, x, y);
+    }
+
+    // A picture of the current frame, signed with the watermark
+    function snapshot(theme) {
+        var out = document.createElement('canvas');
+        out.width = view.width;
+        out.height = view.height;
+        var c = out.getContext('2d');
+        c.drawImage(view, 0, 0);
+        stamp(c, out.width, out.height, theme);
         return out;
     }
 
@@ -444,6 +448,7 @@ var ascii = (function() {
         resetAuto: resetAuto,
         render: render,
         snapshot: snapshot,
+        stamp: stamp,
         setGlyphs: compileGlyphs,
         get glyphs() { return glyphs; },
         get grid() { return grid; }

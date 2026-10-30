@@ -6,28 +6,25 @@
    Before app.js has run, the page already honours the system's light/dark setting, so there is
    never a flash of the wrong colour. */
 :root {
-    --bg: #020a05;
-    --fg: #39ff7a;
-    --accent: #39ff7a;
-    --glow: 0.55;
+    --bg: #08080a;
+    --fg: #f1f1ec;
+    --accent: #ff6a3d;
+    --glow: 0.2;
 
-    --ui: #dcfce8;
-    --ui-dim: rgba(220, 252, 232, 0.62);
-    --glass: rgba(2, 14, 7, 0.62);
-    --glass-solid: rgba(2, 14, 7, 0.92);
-    --edge: rgba(57, 255, 122, 0.22);
-    --sheen: rgba(255, 255, 255, 0.05);
-    --hover: rgba(255, 255, 255, 0.08);
-    --shade: rgba(0, 0, 0, 0.55);
+    --ui: #f1f1ec;
+    --ui-dim: rgba(241, 241, 236, 0.62);
+    --glass: rgba(14, 14, 17, 0.88);
+    --edge: rgba(255, 255, 255, 0.16);
+    --hover: rgba(255, 255, 255, 0.09);
+    --rec: #ff453a;
 
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --mono: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", "Roboto Mono", "Courier New", monospace;
 
     /* Keep clear of notches, rounded corners and the iOS home indicator */
     --pad-top: 14px;
     --pad-side: 16px;
     --pad-bottom: 14px;
-    --mark-x: 12px;
-    --mark-y: 12px;
 }
 
 @supports (padding: max(0px)) {
@@ -35,42 +32,40 @@
         --pad-top: max(14px, env(safe-area-inset-top));
         --pad-side: max(16px, env(safe-area-inset-left), env(safe-area-inset-right));
         --pad-bottom: max(14px, env(safe-area-inset-bottom));
-        --mark-x: max(12px, env(safe-area-inset-left), env(safe-area-inset-right));
-        --mark-y: max(12px, env(safe-area-inset-top), env(safe-area-inset-bottom));
     }
 }
 
-/* Interface colours per theme. Dark themes get dark glass with a tint of their own colour; paper gets pale glass. */
-[data-theme="phosphor"] {
-    --ui: #dcfce8;
-    --ui-dim: rgba(220, 252, 232, 0.62);
-    --glass: rgba(2, 14, 7, 0.62);
-    --glass-solid: rgba(2, 14, 7, 0.92);
-    --edge: rgba(57, 255, 122, 0.22);
-}
-
+/* Interface colours per theme. Dark themes get dark panels with a hint of their own colour; paper gets pale ones. */
 [data-theme="ink"] {
     --ui: #f1f1ec;
     --ui-dim: rgba(241, 241, 236, 0.62);
-    --glass: rgba(14, 14, 17, 0.62);
-    --glass-solid: rgba(14, 14, 17, 0.92);
+    --glass: rgba(14, 14, 17, 0.88);
     --edge: rgba(255, 255, 255, 0.16);
+    --hover: rgba(255, 255, 255, 0.09);
+}
+
+[data-theme="phosphor"] {
+    --ui: #dcfce8;
+    --ui-dim: rgba(220, 252, 232, 0.62);
+    --glass: rgba(2, 14, 7, 0.88);
+    --edge: rgba(57, 255, 122, 0.26);
+    --hover: rgba(255, 255, 255, 0.09);
 }
 
 [data-theme="amber"] {
     --ui: #ffecc4;
     --ui-dim: rgba(255, 236, 196, 0.62);
-    --glass: rgba(22, 11, 0, 0.62);
-    --glass-solid: rgba(22, 11, 0, 0.92);
-    --edge: rgba(255, 178, 31, 0.26);
+    --glass: rgba(22, 11, 0, 0.88);
+    --edge: rgba(255, 178, 31, 0.28);
+    --hover: rgba(255, 255, 255, 0.09);
 }
 
 [data-theme="color"] {
     --ui: #ffffff;
     --ui-dim: rgba(255, 255, 255, 0.64);
-    --glass: rgba(8, 8, 12, 0.62);
-    --glass-solid: rgba(8, 8, 12, 0.92);
+    --glass: rgba(8, 8, 12, 0.88);
     --edge: rgba(255, 255, 255, 0.18);
+    --hover: rgba(255, 255, 255, 0.09);
 }
 
 [data-theme="paper"] {
@@ -79,12 +74,9 @@
     --accent: #e4572e;
     --ui: #1c1812;
     --ui-dim: rgba(28, 24, 18, 0.62);
-    --glass: rgba(246, 242, 232, 0.74);
-    --glass-solid: rgba(246, 242, 232, 0.95);
+    --glass: rgba(246, 242, 232, 0.92);
     --edge: rgba(28, 24, 18, 0.2);
-    --sheen: rgba(255, 255, 255, 0.7);
     --hover: rgba(28, 24, 18, 0.07);
-    --shade: rgba(60, 45, 20, 0.35);
 }
 
 @media (prefers-color-scheme: light) {
@@ -95,12 +87,9 @@
         --glow: 0;
         --ui: #1c1812;
         --ui-dim: rgba(28, 24, 18, 0.62);
-        --glass: rgba(246, 242, 232, 0.74);
-        --glass-solid: rgba(246, 242, 232, 0.95);
+        --glass: rgba(246, 242, 232, 0.92);
         --edge: rgba(28, 24, 18, 0.2);
-        --sheen: rgba(255, 255, 255, 0.7);
         --hover: rgba(28, 24, 18, 0.07);
-        --shade: rgba(60, 45, 20, 0.35);
     }
 }
 
@@ -115,7 +104,7 @@ html, body {
     overflow: hidden; /* it is a full-screen canvas, never a scrolling page */
     background: var(--bg);
     color: var(--ui);
-    font-family: var(--mono);
+    font-family: var(--sans);
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
     overscroll-behavior: none; /* no rubber-banding or pull-to-refresh */
@@ -173,7 +162,7 @@ body.idle {
 }
 
 #view {
-    animation: boot 1.4s ease-out both;
+    animation: fade-in 0.8s ease-out both;
 }
 
 /* A quarter-resolution copy of the art, stretched back up and added on top: a cheap, GPU-friendly bloom */
@@ -187,10 +176,10 @@ body.idle {
 /* Vignette: darkens the corners so the art feels lit from the middle */
 #fx {
     pointer-events: none;
-    background: radial-gradient(ellipse 120% 120% at 50% 50%, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.5) 100%);
+    background: radial-gradient(ellipse 120% 120% at 50% 50%, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.45) 100%);
 }
 
-/* Scanlines for the two retro-terminal themes */
+/* Scanlines, only for the two retro-terminal themes you pick on purpose */
 #fx::after {
     content: "";
     position: absolute;
@@ -229,9 +218,9 @@ body.idle {
     animation: flash 0.5s ease-out;
 }
 
-@keyframes boot {
-    from { opacity: 0; filter: brightness(2.2); }
-    to   { opacity: 1; filter: brightness(1); }
+@keyframes fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 
 @keyframes flash {
@@ -239,63 +228,29 @@ body.idle {
     to   { opacity: 0; }
 }
 
-@keyframes blink {
-    50% { opacity: 0; }
+@keyframes rec {
+    50% { opacity: 0.35; }
 }
 
-@keyframes pulse {
-    50% { transform: translateX(-50%) scale(1.05); }
+/* One number of the countdown: pops in, then settles and dims until the next one */
+@keyframes tick {
+    0%   { transform: scale(1.18); opacity: 0; }
+    15%  { transform: scale(1); opacity: 1; }
+    100% { transform: scale(0.94); opacity: 0.3; }
 }
 
-@keyframes led {
-    50% { opacity: 0.45; }
-}
-
-/* ---------- Viewfinder corners ---------- */
-.marks {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 3;
-    pointer-events: none;
-    opacity: 0.75;
-    transition: opacity 0.5s ease;
-}
-
-.marks i {
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    border: 0 solid var(--accent);
-}
-
-.marks i:nth-child(1) { top: var(--mark-y); left: var(--mark-x); border-top-width: 1.5px; border-left-width: 1.5px; }
-.marks i:nth-child(2) { top: var(--mark-y); right: var(--mark-x); border-top-width: 1.5px; border-right-width: 1.5px; }
-.marks i:nth-child(3) { bottom: var(--mark-y); left: var(--mark-x); border-bottom-width: 1.5px; border-left-width: 1.5px; }
-.marks i:nth-child(4) { bottom: var(--mark-y); right: var(--mark-x); border-bottom-width: 1.5px; border-right-width: 1.5px; }
-
-/* The controls take the corners over, so the marks step aside while they are showing */
-html:not(.hud-hidden) .marks {
-    opacity: 0;
-}
-
-/* ---------- Shared glass panel ---------- */
+/* ---------- Panels ---------- */
 .panel {
     background: var(--glass);
     border: 1px solid var(--edge);
-    border-radius: 12px;
-    -webkit-backdrop-filter: blur(16px) saturate(1.5);
-    backdrop-filter: blur(16px) saturate(1.5);
-    box-shadow: inset 0 1px 0 var(--sheen), 0 12px 32px -14px var(--shade);
+    border-radius: 8px;
     color: var(--ui);
-    font-family: var(--mono);
+    font-family: var(--sans);
 }
 
 a.panel {
     text-decoration: none;
-    transition: border-color 0.2s, background 0.2s;
+    transition: border-color 0.2s;
 }
 
 a.panel:hover {
@@ -304,7 +259,8 @@ a.panel:hover {
 
 a.panel:focus-visible,
 .btn:focus-visible,
-.hint:focus-visible {
+.hint:focus-visible,
+.rec:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
 }
@@ -322,7 +278,7 @@ a.panel:focus-visible,
     justify-content: space-between;
     padding: var(--pad-top) var(--pad-side) var(--pad-bottom);
     pointer-events: none; /* only the controls themselves catch taps, the rest falls through to the stage */
-    transition: opacity 0.5s ease, transform 0.5s ease;
+    transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 .chrome > * {
@@ -351,13 +307,6 @@ a.panel:focus-visible,
     gap: 10px;
 }
 
-.top-end {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-}
-
-/* The sketch's title block, like the caption on a plate */
 .sketch {
     display: block;
     min-width: 0;
@@ -366,99 +315,31 @@ a.panel:focus-visible,
 
 .sketch-name {
     display: block;
-    font: 600 15px/1 var(--mono);
-    letter-spacing: 0.01em;
+    font: 600 16px/1 var(--sans);
+    letter-spacing: -0.01em;
     white-space: nowrap;
 }
 
 .sketch-by {
     display: block;
-    margin-top: 6px;
-    font: 400 11px/1.2 var(--mono);
-    letter-spacing: 0.02em;
+    margin-top: 5px;
+    font: 400 12px/1.2 var(--sans);
     color: var(--ui-dim);
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis; /* if a screen is ever too narrow, the credit trims itself instead of sliding under its neighbours */
-}
-
-.cursor {
-    display: inline-block;
-    width: 0.5em;
-    height: 0.95em;
-    margin-left: 4px;
-    vertical-align: -0.12em;
-    background: var(--accent);
-    animation: blink 1.1s steps(1) infinite;
-}
-
-/* Live status: a lamp, then the facts of the moment */
-.readout {
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
-    height: 40px;
-    margin: 0;
-    padding: 0 14px;
-    font: 500 11px/1 var(--mono);
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-}
-
-.led {
-    flex: none;
-    width: 8px;
-    height: 8px;
-    border: 1.5px solid var(--ui-dim);
-    border-radius: 50%;
-    transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
-}
-
-.readout[data-mode="live"] .led {
-    border-color: var(--accent);
-    background: var(--accent);
-    box-shadow: 0 0 9px var(--accent);
-    animation: led 2.4s ease-in-out infinite;
-}
-
-.readout[data-mode="paused"] .led {
-    border-color: var(--ui-dim);
-    background: var(--ui-dim);
-}
-
-.ro-mode {
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-}
-
-.ro-more {
-    display: none;
-    color: var(--ui-dim);
-}
-
-.ro-more small {
-    margin-left: 3px;
-    font-size: 10px;
-    opacity: 0.8;
-}
-
-.ro-sep {
-    margin: 0 8px;
-    opacity: 0.4;
+    text-overflow: ellipsis; /* if a screen is ever too narrow, the credit trims itself instead of sliding under its neighbour */
 }
 
 .source {
     display: inline-flex;
+    flex: none;
     align-items: center;
     justify-content: center;
-    gap: 9px;
+    gap: 8px;
     height: 40px;
     min-width: 40px;
     padding: 0 11px;
-    font: 500 11px/1 var(--mono);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    font: 500 13px/1 var(--sans);
 }
 
 .source svg {
@@ -479,7 +360,7 @@ a.panel:focus-visible,
     align-items: center;
     max-width: 100%;
     padding: 5px;
-    border-radius: 16px;
+    border-radius: 10px;
 }
 
 .group {
@@ -510,11 +391,10 @@ a.panel:focus-visible,
     margin: 0;
     padding: 0;
     border: 0;
-    border-radius: 11px;
+    border-radius: 7px;
     background: transparent;
     color: var(--ui);
-    font: 500 12px/1 var(--mono);
-    letter-spacing: 0.02em;
+    font: 500 13px/1 var(--sans);
     cursor: pointer;
     touch-action: manipulation; /* no double-tap zoom delay */
     transition: background 0.18s, color 0.18s, transform 0.12s;
@@ -529,10 +409,10 @@ a.panel:focus-visible,
 }
 
 .btn:active {
-    transform: scale(0.92);
+    transform: scale(0.94);
 }
 
-/* "On" is a lit indicator under the icon, like a switch on a piece of kit */
+/* "On" is a lit bar under the icon, like a switch on a piece of kit */
 .btn::after {
     content: "";
     position: absolute;
@@ -543,7 +423,7 @@ a.panel:focus-visible,
     border-radius: 2px;
     background: var(--accent);
     transform: translateX(-50%);
-    transition: width 0.22s ease;
+    transition: width 0.2s ease;
 }
 
 .btn.is-on,
@@ -554,6 +434,16 @@ a.panel:focus-visible,
 .btn.is-on::after,
 .btn[aria-pressed="true"]::after {
     width: 14px;
+}
+
+/* Recording is red, whatever the theme */
+.btn.is-rec {
+    color: var(--rec);
+}
+
+.btn.is-rec::after {
+    width: 14px;
+    background: var(--rec);
 }
 
 .btn:focus {
@@ -586,10 +476,120 @@ kbd {
     margin-left: 9px;
     padding: 3px 5px 2px;
     border: 1px solid var(--edge);
-    border-radius: 5px;
+    border-radius: 4px;
     color: var(--ui-dim);
     font: 600 10px/1.2 var(--mono);
-    letter-spacing: 0.02em;
+}
+
+/* ---------- Countdown ---------- */
+.count {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--ui);
+    font-family: var(--sans);
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+/* The picture dims a little behind the number, so it reads on anything */
+.count::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: var(--bg);
+    opacity: 0.66;
+}
+
+.count > * {
+    position: relative;
+    margin: 0;
+}
+
+.count.on {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.count-label {
+    font: 500 clamp(16px, 2.6vmin, 22px)/1 var(--sans);
+}
+
+.count-num {
+    font: 200 min(46vmin, 360px)/1.05 var(--sans);
+    font-variant-numeric: tabular-nums;
+}
+
+.count-num.tick {
+    animation: tick 1s ease-out both;
+}
+
+.count-hint {
+    margin-top: 6px;
+    font: 400 14px/1 var(--sans);
+    opacity: 0.75;
+}
+
+/* ---------- Recording badge ---------- */
+.rec {
+    position: fixed;
+    left: 50%;
+    top: calc(var(--pad-top) + 68px);
+    z-index: 7;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    height: 38px;
+    padding: 0 12px;
+    transform: translateX(-50%);
+    font: 500 14px/1 var(--sans);
+    cursor: pointer;
+    transition: top 0.3s ease, border-color 0.2s;
+}
+
+.rec[hidden] {
+    display: none;
+}
+
+.rec:hover {
+    border-color: var(--rec);
+}
+
+/* With the controls away there is nothing at the top, so the badge moves up to the edge */
+.hud-hidden .rec {
+    top: var(--pad-top);
+}
+
+.rec-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--rec);
+    animation: rec 1.4s ease-in-out infinite;
+}
+
+.rec-time {
+    min-width: 3ch;
+    font-variant-numeric: tabular-nums;
+}
+
+.rec-stop {
+    padding-left: 9px;
+    border-left: 1px solid var(--edge);
+    color: var(--ui-dim);
 }
 
 /* ---------- Narrator ---------- */
@@ -600,21 +600,21 @@ kbd {
     z-index: 4;
     width: max-content;
     max-width: calc(100vw - 32px);
-    padding: 13px 18px 13px 16px;
-    border-radius: 14px;
-    font: 500 16px/1.45 var(--mono);
-    text-align: left;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font: 500 16px/1.4 var(--sans);
+    text-align: center;
     opacity: 0;
     transform: translate(-50%, 8px);
-    transition: opacity 0.45s ease, transform 0.45s ease;
+    transition: opacity 0.4s ease, transform 0.4s ease;
     pointer-events: none;
 }
 
 @supports (bottom: max(0px)) {
     .caption {
         bottom: calc(max(14vh, 112px) + env(safe-area-inset-bottom));
-        max-width: min(92vw, 680px);
-        font-size: clamp(14px, 1.1vw + 10px, 22px);
+        max-width: min(92vw, 640px);
+        font-size: clamp(15px, 0.9vw + 11px, 21px);
     }
 }
 
@@ -623,20 +623,12 @@ kbd {
     transform: translate(-50%, 0);
 }
 
-.prompt {
-    margin-right: 0.8em;
-    color: var(--accent);
-    font-weight: 700;
+.caption-text {
+    transition: opacity 0.16s;
 }
 
-.caret {
-    display: inline-block;
-    width: 0.55em;
-    height: 1.05em;
-    margin-left: 3px;
-    vertical-align: -0.15em;
-    background: var(--accent);
-    animation: blink 1s steps(1) infinite;
+.caption-text.swap {
+    opacity: 0;
 }
 
 /* The hint and the toasts share one spot, just under the top bar */
@@ -647,16 +639,14 @@ kbd {
     top: calc(var(--pad-top) + 68px);
     z-index: 7;
     white-space: nowrap;
-    font: 500 12px/1 var(--mono);
+    font: 500 13px/1 var(--sans);
 }
 
 .hint {
-    padding: 11px 16px;
-    border-radius: 999px;
+    padding: 11px 15px;
     color: var(--accent);
     cursor: pointer;
     transform: translateX(-50%);
-    animation: pulse 1.8s ease-in-out infinite;
 }
 
 .hint[hidden] {
@@ -664,8 +654,7 @@ kbd {
 }
 
 .toast {
-    padding: 11px 16px;
-    border-radius: 999px;
+    padding: 11px 15px;
     opacity: 0;
     transform: translate(-50%, -6px);
     transition: opacity 0.25s, transform 0.25s;
@@ -675,6 +664,15 @@ kbd {
 .toast.on {
     opacity: 1;
     transform: translate(-50%, 0);
+}
+
+/* While recording, the badge owns the top spot, so toasts sit just under it */
+.recording .toast {
+    top: calc(var(--pad-top) + 116px);
+}
+
+.recording.hud-hidden .toast {
+    top: calc(var(--pad-top) + 58px);
 }
 
 .debug {
@@ -710,39 +708,14 @@ kbd {
     padding: 24px;
     background: var(--bg);
     color: var(--ui);
-    font-family: var(--mono);
+    font-family: var(--sans);
     text-align: center;
 }
 
 /* ---------- Adapting to the device ---------- */
 
-/* Compact phones (iPhone mini, SE, most Androids): a slightly tighter credit line keeps the whole name visible */
-@media (max-width: 389px) {
-    .sketch-by {
-        font-size: 10px;
-        letter-spacing: 0;
-    }
-}
-
-/* The very smallest (iPhone SE 1st gen): the status chip shrinks to just its lamp to leave room for the credit */
-@media (max-width: 359px) {
-    .ro-mode {
-        display: none;
-    }
-
-    .readout {
-        width: 40px;
-        justify-content: center;
-        padding: 0;
-    }
-}
-
-/* Anything wider than a phone: room for the readout's details and the word "source" */
+/* Anything wider than a phone: room for the word "GitHub" and slightly bigger buttons */
 @media (min-width: 600px) {
-    .ro-more {
-        display: inline;
-    }
-
     .source-text {
         display: inline;
     }
@@ -778,15 +751,17 @@ kbd {
         height: auto;
         overflow: visible;
         clip: auto;
-        font-size: 10px;
-        letter-spacing: 0.06em;
-        text-transform: lowercase;
+        font-size: 11px;
         color: var(--ui-dim);
     }
 
     .btn.is-on .lbl,
     .btn[aria-pressed="true"] .lbl {
         color: var(--accent);
+    }
+
+    .btn.is-rec .lbl {
+        color: var(--rec);
     }
 
     .sep {
@@ -848,18 +823,27 @@ kbd {
         display: none;
     }
 
-    .readout,
     .source {
         height: 36px;
     }
 
     .hint,
-    .toast {
+    .toast,
+    .debug,
+    .rec {
         top: calc(var(--pad-top) + 46px);
     }
 
-    .debug {
-        top: calc(var(--pad-top) + 46px);
+    .hud-hidden .rec {
+        top: var(--pad-top);
+    }
+
+    .recording .toast {
+        top: calc(var(--pad-top) + 92px);
+    }
+
+    .recording.hud-hidden .toast {
+        top: calc(var(--pad-top) + 54px);
     }
 }
 
@@ -889,20 +873,11 @@ kbd {
     }
 }
 
-/* Don't backdrop-blur on weaker devices, where it costs real frames (app.js adds this class) */
-.lite .panel {
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-    background: var(--glass-solid);
-}
-
 /* Respect people who ask for less motion */
 @media (prefers-reduced-motion: reduce) {
     #view,
-    .caret,
-    .cursor,
-    .hint,
-    .led {
+    .rec-dot,
+    .count-num.tick {
         animation: none !important;
     }
 

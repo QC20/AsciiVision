@@ -1,11 +1,11 @@
 /*
   narrator.js
-  AsciiVision's voice. Every line is typed out as a caption and, when the browser
-  allows it, spoken aloud as well.
+  The few plain lines the page says (what it is, asking for the camera, what went wrong).
+  They show as a caption and, if the visitor has turned the voice on, are read aloud too.
 
   Browsers refuse to make sound on a page nobody has touched yet (autoplay policy),
-  and that includes speech. So the captions always work, and the voice switches on by
-  itself the moment the visitor taps, clicks or presses a key anywhere on the page.
+  and that includes speech. So when the voice is on, it starts the moment the visitor
+  taps, clicks or presses a key anywhere on the page.
 */
 var narrator = (function() {
     var box = document.getElementById('caption');
@@ -93,23 +93,20 @@ var narrator = (function() {
         });
     }
 
-    // Type the line into the caption, one letter at a time
-    function type(text, id) {
+    // Put a line on screen. Whole lines appear at once, with a short cross-fade when one replaces another:
+    // typing a message out letter by letter is how a chatbot streams its answer, and this is not one.
+    function show(text, id, replacing) {
         return new Promise(function(resolve) {
-            if (reducedMotion) {
+            if (reducedMotion || !replacing) {
                 textEl.textContent = text;
                 return resolve();
             }
-            var n = 0;
-            textEl.textContent = '';
-            (function tick() {
-                if (id !== line) return resolve(); // a newer line has taken over
-                n++;
-                textEl.textContent = text.slice(0, n);
-                if (n >= text.length) return resolve();
-                var ch = text.charAt(n - 1);
-                setTimeout(tick, /[.,?!]/.test(ch) ? 190 : 34);
-            })();
+            textEl.classList.add('swap');
+            setTimeout(function() {
+                if (id === line) textEl.textContent = text;
+                textEl.classList.remove('swap');
+                resolve();
+            }, 160);
         });
     }
 
@@ -118,14 +115,16 @@ var narrator = (function() {
     function say(text, options) {
         options = options || {};
         var id = ++line;
+        var replacing = box.classList.contains('on');
         current = text;
         box.classList.add('on');
         srEl.textContent = text;
 
-        var typed = type(text, id);
+        var shown = show(text, id, replacing);
         var spoken = options.silent ? Promise.resolve(false) : speak(text);
-        return Promise.all([typed, spoken]).then(function(result) {
-            var hold = result[1] ? 250 : 500 + text.length * 22;
+        return Promise.all([shown, spoken]).then(function(result) {
+            // Long enough to read it comfortably, or until it has been spoken
+            var hold = result[1] ? 250 : 800 + text.length * 40;
             return wait(options.hold !== undefined ? options.hold : hold);
         }).then(function() {
             return id === line;

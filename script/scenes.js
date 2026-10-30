@@ -12,17 +12,15 @@ var scenes = (function() {
     var title = null;      // the product name as a brightness mask
     var zbuf = null;       // depth buffer for the donut
     var spare = null;      // second buffer, used while one scene fades into the next
-    var heads, speeds, lens; // state of the digital rain, one entry per column
     var low = false;       // weaker devices get coarser maths
 
-    var order = ['plasma', 'donut', 'rain', 'lava'];
+    var order = ['plasma', 'donut', 'lava'];
     var current = 0;
     var previous = 0;
     var age = 0;           // seconds the current scene has been on
     var fade = 1;          // 0..1 progress of the cross-fade into the current scene
     var clock = 0;         // scene time; runs slower when the user prefers reduced motion
     var speed = 1;
-    var frame = 0;
     var titleState = { target: 0, amount: 0 };
 
     var SCENE_SECONDS = 14;
@@ -73,15 +71,6 @@ var scenes = (function() {
 
         zbuf = new Float32Array(g.count);
         spare = new Float32Array(g.count);
-
-        heads = new Float32Array(g.cols);
-        speeds = new Float32Array(g.cols);
-        lens = new Float32Array(g.cols);
-        for (c = 0; c < g.cols; c++) {
-            heads[c] = (Math.random() * 1.3 - 0.3) * g.rows; // start spread across the screen, not all above it
-            speeds[c] = 5 + Math.random() * 16;
-            lens[c] = 6 + Math.random() * g.rows * 0.5;
-        }
 
         title = buildTitle(g);
     }
@@ -232,37 +221,6 @@ var scenes = (function() {
         }
     }
 
-    // Digital rain: every column has a bright head falling with a fading tail
-    function rain(lum, t, dt) {
-        var cols = grid.cols;
-        var rows = grid.rows;
-        var c, r, d, v, h;
-
-        for (c = 0; c < cols; c++) {
-            heads[c] += speeds[c] * dt * speed;
-            if (heads[c] - lens[c] > rows) {
-                heads[c] = -Math.random() * rows * 0.4;
-                speeds[c] = 5 + Math.random() * 16;
-                lens[c] = 6 + Math.random() * rows * 0.5;
-            }
-        }
-        frame++;
-        for (r = 0; r < rows; r++) {
-            for (c = 0; c < cols; c++) {
-                d = heads[c] - r;
-                if (d < 0 || d > lens[c]) {
-                    lum[r * cols + c] = 0;
-                    continue;
-                }
-                v = 1 - d / lens[c];
-                v = d < 1 ? 1 : v * v;
-                // Cheap hash: a different flicker for every cell, changing a few times a second
-                h = ((r * 73856093) ^ (c * 19349663) ^ ((frame >> 2) * 83492791)) >>> 0;
-                lum[r * cols + c] = v * (0.7 + 0.3 * ((h & 255) / 255));
-            }
-        }
-    }
-
     // Lava lamp: soft blobs that merge when they come close
     function lava(lum, t) {
         var cols = grid.cols;
@@ -295,7 +253,6 @@ var scenes = (function() {
     function draw(name, lum, t, dt) {
         if (name === 'plasma') plasma(lum, t);
         else if (name === 'donut') donut(lum, t);
-        else if (name === 'rain') rain(lum, t, dt);
         else lava(lum, t);
     }
 
